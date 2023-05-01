@@ -39,8 +39,6 @@
             XDEF HILO1_init, HILOtimes1
             XDEF get_HI_time1, get_LO_time1
             XDEF fill_weights, fire_rules, calc_output
-            XDEF eeprom_init, write_char, read_char
-
 
 ; include derivative specific macros
             INCLUDE 'mc9s12dg256.inc'
@@ -9962,64 +9960,6 @@ calc_output:                  ;B = numout
             ediv              ;Y = quotient
             tfr   Y,D         ;D = quot A = 0, B = output
             rts
-                                                  
-; Code for the eeprom
-WREN:       equ     $06         ; set write enable latch
-WRDI:       equ     $04         ; reset write enable latch
-RDSR:       equ     $05         ; read the status register
-WRSR:       equ     $01         ; write to the status register
-READ:       equ     $03         ; read the memory code
-WRITE:      equ     $02         ; write to memory code
-RDID:       equ     $9F         ; read device id
-
-ADDR:       equ     $0000
-
-; void eeprom_init();
-; just like SP1_init with small changes
-eeprom_init:
-            movb  #$00, SPI1BR      ;divide 24 MHz clock by 2
-            movb  #$50, SPI1CR1     ;master, CPHA=0, CPOL=0
-            clr   SPI1CR2           ;disable MODF
-            bset  DDRP, #$08        ;SS1 an output port
-            rts
-
-; void write_char(uint8);
-; takes an unsigned char and writes to the first memory addr of eeprom
-write_char:
-            pshb                     ;push char to stack
-writ1       brclr SPI1SR,#$20,writ1  ;wait for SPTEF=1
-            ldab  WREN               ;load op code to enable writing
-            bclr  PTP, #$08          ;clear bit 3 of port p
-            stab  SPI1DR             ;start sending byte
-writ2       brclr SPI1SR, #$20,writ2 ;wait until sent
-            ldd   ADDR
-            staa  SPI1DR
-writ3       brclr SPI1SR, #$20, writ3
-            stab  SPI1DR
-writ4       brclr SPI1SR, #$20, writ4
-            pulb                     ;get char back
-            stab  SPI1DR             ;write char
-writ5       brclr SPI1SR, #$20, writ5;wait until sent
-            ldab  WRDI               ;disable writing
-            stab  SPI1DR             ;start sending byte
-writ6       brclr SPI1SR, #$20, writ6 ;wait until sent
-            bset PTP, #$08           ;deselect slave            
-            rts
-
-; uint8 read_char(void);
-; returns a char from the first memory addr of eeprom
-read_char:
-read1       brclr SPI1SR, #$20, read1
-            ldab  READ
-            bclr  PTP, #$80
-            stab  SPI1DR
-read2       brclr SPI1SR, #$20, read2
-            ldd   ADDR
-            staa  SPI1DR
-read3       brclr SPI1SR, #$20, read3
-            stab  SPI1DR
-read4       brclr SPI1SR, #$20, read4
-            ldab  SPI1DR
-            bset  PTP, #$80
-            rts                                                                                      
+                     
+                                                                                    
                                        
