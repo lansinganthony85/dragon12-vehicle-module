@@ -8,7 +8,10 @@
 //         (int) global variables motor_left_speed and motor_right_speed
 // OUTPUTS:
 //         (int) modifies global inputs to their scaled values 
-int scale_motor_speed(void)
+extern int motor_left_speed;
+extern int motor_right_speed; 
+
+void scale_motor_speed(void)
 {
   static float motor_scalar = 1;
   
