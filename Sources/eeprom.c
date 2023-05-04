@@ -42,11 +42,11 @@ uint16 g_write_addr = 0x0002;     // the current memory addr of the eeprom for w
  */
 void eeprom_init(void)
 {
-    SPI1BR = 0x10;         // Divide 24MHz by 2
-    SPI1CR1 = 0x50;         // set Dragon12 as master with CPHA and CPOL to 0
-    SPI1CR2 = CLEAR;        // Disable MODF
-    DDRP = 0x08;            // SS1 as an output port
-    SS1_HI();               // disable slave for now       
+    SPI2BR = 0x10;         // Divide 24MHz by 2
+    SPI2CR1 = 0x50;         // set Dragon12 as master with CPHA and CPOL to 0
+    SPI2CR2 = CLEAR;        // Disable MODF
+    DDRP = 0x40;            // SS1 as an output port
+    SS2_HI();               // disable slave for now       
 } /* eeprom_init */
 
 /*
@@ -66,11 +66,11 @@ void eeprom_init(void)
 void write_char(uint8 char_to_send)
 {   
     write_enable();
-    SS1_LO();
+    SS2_LO();
     (void) send_byte(WRITE);
     set_mem_addr(g_write_addr);
     (void) send_byte(char_to_send);     // return value not needed so void
-    SS1_HI();
+    SS2_HI();
     write_disable();
     
     g_write_addr++;
@@ -94,12 +94,12 @@ void write_char(uint8 char_to_send)
 void write_int(uint16 int_to_send)
 {
     write_enable();
-    SS1_LO();
+    SS2_LO();
     (void) send_byte(WRITE);
     set_mem_addr(g_write_addr);
     (void)send_byte(int_to_send>>8);    // send upper byte
     (void)send_byte(int_to_send);       // send lower byte
-    SS1_HI();
+    SS2_HI();
     
     write_disable();
     
@@ -124,11 +124,11 @@ unsigned char read_char(void)
 {
     uint8 char_to_return;
     
-    SS1_LO();
+    SS2_LO();
     (void) send_byte(READ);
     set_mem_addr(g_read_addr);
     char_to_return = send_byte(JUNK);
-    SS1_HI();
+    SS2_HI();
     g_read_addr++;
     
     return char_to_return;
@@ -139,13 +139,14 @@ uint16 read_int(void)
 {
     uint16 int_to_return;
     
-    SS1_LO();
-    (void) send_byte(READ);    set_mem_addr(g_read_addr);
+    SS2_LO();
+    (void) send_byte(READ);
+    set_mem_addr(g_read_addr);
     int_to_return = send_byte(JUNK);
     int_to_return <<= 8;
     int_to_return &= 0xFF00;
     int_to_return |= send_byte(JUNK);
-    SS1_HI();
+    SS2_HI();
     
     g_read_addr += 2;
     
@@ -167,16 +168,16 @@ uint16 read_int(void)
  */
 void write_enable(void)
 {
-    SS1_LO();
+    SS2_LO();
     (void) send_byte(WREN);
-    SS1_HI();
+    SS2_HI();
 } /* write_enable */
 
 void write_disable(void)
 {
-    SS1_LO();
+    SS2_LO();
     (void) send_byte(WRDI);
-    SS1_HI();   
+    SS2_HI();   
 }
 
 /*
@@ -196,14 +197,14 @@ void write_disable(void)
 uint8 send_byte(uint8 byte_to_send)
 {
     /* wait for SPTEF */
-    while (!(SPI1SR & (1<<5)));
+    while (!(SPI2SR & (1<<5)));
     
-    SPI1DR = byte_to_send;
+    SPI2DR = byte_to_send;
     
     /* wait for transfer to complete */
-    while (!(SPI1SR & (1<<7)));
+    while (!(SPI2SR & (1<<7)));
     
-    return SPI1DR;
+    return SPI2DR;
 } /* send_byte */
 
 /*
@@ -230,12 +231,12 @@ void complete_write(void)
 {
     uint16 data_size = get_data_size();
     write_enable();
-    SS1_LO();
+    SS2_LO();
     (void) send_byte(WRITE);
     set_mem_addr(g_data_size_addr);
     (void)send_byte(data_size>>8);    // send upper byte
     (void)send_byte(data_size);       // send lower byte
-    SS1_HI();
+    SS2_HI();
     
     write_disable();   
 }
@@ -244,14 +245,14 @@ uint16 read_data_size(void)
 {
     uint16 data_size;
     
-    SS1_LO();
+    SS2_LO();
     (void) send_byte(READ);
     set_mem_addr(g_data_size_addr);
     data_size = send_byte(JUNK);
     data_size <<= 8;
     data_size &= 0xFF00;
     data_size |= send_byte(JUNK);
-    SS1_HI();
+    SS2_HI();
     
     return data_size;    
 }
