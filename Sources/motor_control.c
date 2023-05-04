@@ -17,14 +17,14 @@ void scale_motor_speed(void)
   
   if ((motor_left_speed > 100) || (motor_left_speed < -100))
   {
-    motor_scalar = abs(100.0/(float)motor_left_speed);
+    motor_scalar = abs_value(100.0/(float)motor_left_speed);
 
     motor_left_speed *= motor_scalar;
     motor_right_speed *= motor_scalar; 
   }
   else if ((motor_right_speed > 100) || (motor_right_speed < -100))
   {
-    motor_scalar = abs(100.0/(float)motor_right_speed);
+    motor_scalar = abs_value(100.0/(float)motor_right_speed);
 
     motor_left_speed *= motor_scalar;
     motor_right_speed *= motor_scalar; 

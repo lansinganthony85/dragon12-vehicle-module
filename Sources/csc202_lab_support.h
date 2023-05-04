@@ -200,24 +200,7 @@ void alt_clear()
 
 
 
-// Returns the absolute value of the input
-// INPUTS:
-//         (float) input_val: a float
-// OUTPUTS:
-//         (float) the absolute value of the input
-float abs(float input_val)
-{
-  // If input is negative, multiply by -1 and return.
-  // Otherwise return the input.
-  if (input_val < 0.0) 
-  {
-    return (-1.0*input_val);
-  }
-  else
-  {
-    return input_val;
-  }
-}
+
 
 
 #endif /* CSC202_SUPPORT_H_ */

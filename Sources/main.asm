@@ -38,6 +38,8 @@
             XDEF sound_init, sound_on, sound_off, tone
             XDEF HILO1_init, HILOtimes1
             XDEF get_HI_time1, get_LO_time1
+            XDEF HILO2_init, HILOtimes2
+            XDEF get_HI_time2, get_LO_time2
             XDEF fill_weights, fire_rules, calc_output
 
 ; include derivative specific macros
@@ -71,6 +73,9 @@ pad:	    rmb	1
 TC1old:   rmb 2
 LO_time1  rmb 2
 HI_time1  rmb 2
+TC2old:   rmb 2
+LO_time2  rmb 2
+HI_time2  rmb 2
 LCDimg:		equ	pmimg
 LCD_RSimg:	equ	pmimg
 LCD_ENimg:	equ	pmimg
@@ -1239,6 +1244,23 @@ HILO1_init:
             bset  TIE,#$02    ;enable TC1 interrupts
             cli               ;enable interrupts
 						rts
+						
+; CUSTOM
+; calc HI-LO times of pulse train on Ch 2 
+; and store results in HI_time2 and LO_time2            
+; 
+; void HILO2_init(void);
+HILO2_init:
+            bclr  TIOS,#$04   ;select input capture 2
+            movb  #$04,TSCR2  ;div by 16: 24MHz/16 = 1.5 MHz
+            movb  #$80,TSCR1  ;enable timer
+            ldd   TCNT
+            std   TC2 				;init cnt in TC2
+            bset  TCTL4,#$30  ;interrupt on both edges of Ch 2
+						movb  #$04,TFLG1  ;clear any old flag on Ch 2
+            bset  TIE,#$04    ;enable TC2 interrupts
+            cli               ;enable interrupts
+						rts
 
 ; calc HI-LO times of pulse train on Ch 1 
 ;   and store results in HI_time1 and LO_time1            
@@ -1260,6 +1282,30 @@ HL1:        ldd   TC1					;else, falling edge
             std   TC1old;     ;TC1old = TC1
 HL2:        bset  TFLG1, #$02 ;clear int flag            
             rts
+            
+            
+; CUSTOM
+; calc HI-LO times of pulse train on Ch 2 
+; and store results in HI_time2 and LO_time2            
+; 
+; void getHILOtimes2(void);
+HILOtimes2:
+						 brclr PTT,$04,HL21 ;if PTT2 is hi, rising edge
+						 ldd   TC2
+					   pshd              ;save TC2
+					 	 subd  TC2old      ;LO_time'
+             std   LO_time2;   ;store LO_time2
+             puld              ;get TC2
+             std   TC2old;     ;TC2old = TC2
+             bra   HL22
+HL21:        ldd   TC2					;else, falling edge
+					   pshd              ;save TC2
+						 subd  TC2old      ;HI_time'
+             std   HI_time2;   ;save HI_time2
+             puld              ;get TC2
+             std   TC2old;     ;TC2old = TC2
+HL22:        bset  TFLG1, #$04 ;clear int flag
+             rts
 
 ; int get_HI_time1(void);
 get_HI_time1:
@@ -1269,6 +1315,18 @@ get_HI_time1:
 ; int get_LO_time1(void);
 get_LO_time1:
             ldd   LO_time1
+            rts
+            
+; CUSTOM
+; int get_HI_time2(void);
+get_HI_time2:
+            ldd   HI_time2
+            rts
+     
+; CUSTOM
+; int get_LO_time2(void);
+get_LO_time2:
+            ldd   LO_time2
             rts
             
 ; Fuzzy Control routines

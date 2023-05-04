@@ -15,7 +15,7 @@
 #include "environment.h"
 #include "output.h"
 #include "clock.h"
-#include "csc202_lab_support.h"     /* include CSC202 Support */
+//#include "csc202_lab_support.h"     /* include CSC202 Support */
 #include "rc_read.h"                /* include code to read RC PWM */
 #include "motor_control.h"
 
@@ -29,6 +29,7 @@
 
 
 /* PROTOTYPES */
+float abs_value(float input_val);
 
 /* GLOBALS */
 uint8 g_done = FALSE;
@@ -111,49 +112,52 @@ void main(void) {
                 write_data(data_log);
                 ms_delay(2000);
 
-              // Channel 1: left/right
-              // Channel 2: forward/backward
-              LR_decimal = get_high_time_decimal(1);
-              FB_decimal = get_high_time_decimal(2);
               
-              // Combine values from front/back and left/right inputs
-              motor_left_speed = (FB_decimal + LR_decimal);
-              motor_right_speed = (FB_decimal - LR_decimal);
-              
-              
-              // Only print to LCD if dip SW1 is HIGH
-              dip_switch_read = SW1_dip();
-              if ((dip_switch_read & 0x80) == 0x00)
-              {
-                // Display un-scaled inputs on LCD
-                set_lcd_addr(0x00);
-                write_int_lcd(motor_left_speed);
-                type_lcd("  ");
-                write_int_lcd(motor_right_speed); 
-              }
-              
-
-              scale_motor_speed();
-              
-              
-              
-              if ((dip_switch_read & 0x80) == 0x00)
-              {
-                // Display scaled control data on LCD
-                set_lcd_addr(0x40);
-                write_int_lcd(motor_left_speed);
-                type_lcd("  ");
-                write_int_lcd(motor_right_speed);
-              }
-              
-              
-              // Set motor speed
-              set_motor_speed(1, motor_left_speed);
-              set_motor_speed(2, motor_right_speed);
-
-              ADC_battery_reading = ad1conv(BATTERY_ADC_CHANNEL);
-
             } /* if */
+            
+            // Channel 1: left/right
+            // Channel 2: forward/backward
+            LR_decimal = get_high_time_decimal(1);
+            FB_decimal = get_high_time_decimal(2);
+            
+            // Combine values from front/back and left/right inputs
+            motor_left_speed = (FB_decimal + LR_decimal);
+            motor_right_speed = (FB_decimal - LR_decimal);
+            
+            
+            // Only print to LCD if dip SW1 is HIGH
+            dip_switch_read = SW1_dip();
+            if ((dip_switch_read & 0x40) == 0x00)
+            {
+              // Display un-scaled inputs on LCD
+              set_lcd_addr(0x00);
+              write_int_lcd(motor_left_speed);
+              type_lcd("  ");
+              write_int_lcd(motor_right_speed); 
+            }
+            
+
+            scale_motor_speed();
+            
+            
+            
+            if ((dip_switch_read & 0x40) == 0x00)
+            {
+              // Display scaled control data on LCD
+              set_lcd_addr(0x40);
+              write_int_lcd(motor_left_speed);
+              type_lcd("  ");
+              write_int_lcd(motor_right_speed);
+            }
+            
+            
+            // Set motor speed
+            set_motor_speed(1, motor_left_speed);
+            set_motor_speed(2, motor_right_speed);
+
+            ADC_battery_reading = ad1conv(BATTERY_ADC_CHANNEL);
+
+            
         } /* while */
         
         complete_write();
@@ -179,6 +183,28 @@ void main(void) {
   type_lcd("Program Stopped");
  
 } /* main */
+
+
+
+// Returns the absolute value of the input
+// INPUTS:
+//         (float) input_val: a float
+// OUTPUTS:
+//         (float) the absolute value of the input
+float abs_value(float input_val)
+{
+  // If input is negative, multiply by -1 and return.
+  // Otherwise return the input.
+  if (input_val < 0.0) 
+  {
+    return (-1.0*input_val);
+  }
+  else
+  {
+    return input_val;
+  }
+}
+
 
 /*
  *  DESCRIPTION
