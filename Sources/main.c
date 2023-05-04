@@ -15,13 +15,38 @@
 #include "environment.h"
 #include "output.h"
 #include "clock.h"
+#include "csc202_lab_support.h"     /* include CSC202 Support */
+#include "rc_read.h"                /* include code to read RC PWM */
+#include "motor_control.h"
+
+/* DEFINITIONS*/
+#define MOTOR_SPEED_MULTIPLIER             100.0
+#define LIGHT_ADC_CHANNEL                  4
+#define TEMP_ADC_CHANNEL                   5
+#define BATTERY_ADC_CHANNEL                3 // Port A bit 11
+
+#define ADC_TO_DEGREES_F(input)            32 + ((input/2) * 1.8);  
+
 
 /* PROTOTYPES */
 
 /* GLOBALS */
 uint8 g_done = FALSE;
+int motor_left_speed = 0;
+int motor_right_speed = 0;
 
 /* INTERRUPTS */
+// Read high times from PWM 1
+void interrupt 9 handler1()
+{
+    HILOtimes1();
+}
+// Read high times from PWM 2
+void interrupt 10 handler2()
+{
+    HILOtimes2();
+}
+
 
 void main(void) {
   /* VARIABLES */
@@ -33,13 +58,29 @@ void main(void) {
   uint8 index;
   uint8 true_false;
   
+  char LR_decimal = 0.0;
+  char FB_decimal = 0.0;
+
+  //float motor_scalar = 1;
+  char dip_switch_read = 0;
+  char degrees_f_reading = 0;
+  int ADC_battery_reading = 0;
+  
   PLL_init();        // set system clock frequency to 24 MHz
   lcd_init();
   clear_lcd();
   seg7_disable();
   led_disable();
+  SW_enable();
+  //ad0_enable();
+  ad1_enable();
   
- // SW_enable();
+  HILO2_init();
+  HILO1_init(); 
+  
+  motor1_init();
+  motor2_init();
+  
   
   eeprom_init();
   
@@ -56,8 +97,10 @@ void main(void) {
         clock_init();
         environment_sensor_init();
         
+        
         while(!g_done)
         {
+            // Loops until button is pressed to exit explore mode
             true_false = is_collect_time(30);
             if(true_false)
             {
@@ -66,11 +109,57 @@ void main(void) {
                 temperature = get_temp();
                 data_log = make_data_log(time_of_data, temperature, light, 0);
                 write_data(data_log);
-                ms_delay(2000);   
+                ms_delay(2000);
+
+              // Channel 1: left/right
+              // Channel 2: forward/backward
+              LR_decimal = get_high_time_decimal(1);
+              FB_decimal = get_high_time_decimal(2);
+              
+              // Combine values from front/back and left/right inputs
+              motor_left_speed = (FB_decimal + LR_decimal);
+              motor_right_speed = (FB_decimal - LR_decimal);
+              
+              
+              // Only print to LCD if dip SW1 is HIGH
+              dip_switch_read = SW1_dip();
+              if ((dip_switch_read & 0x80) == 0x00)
+              {
+                // Display un-scaled inputs on LCD
+                set_lcd_addr(0x00);
+                write_int_lcd(motor_left_speed);
+                type_lcd("  ");
+                write_int_lcd(motor_right_speed); 
+              }
+              
+
+              scale_motor_speed();
+              
+              
+              
+              if ((dip_switch_read & 0x80) == 0x00)
+              {
+                // Display scaled control data on LCD
+                set_lcd_addr(0x40);
+                write_int_lcd(motor_left_speed);
+                type_lcd("  ");
+                write_int_lcd(motor_right_speed);
+              }
+              
+              
+              // Set motor speed
+              set_motor_speed(1, motor_left_speed);
+              set_motor_speed(2, motor_right_speed);
+
+              ADC_battery_reading = ad1conv(BATTERY_ADC_CHANNEL);
+
             } /* if */
         } /* while */
         
         complete_write();
+        
+        
+        
         
   } /* if */
   else
