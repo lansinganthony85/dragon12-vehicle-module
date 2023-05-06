@@ -12,13 +12,13 @@
 #define DATA_BITMASK 0x80
 
 uint16 g_data_size = 0;
-
+/*
 uint8 is_explore_mode(void)
 {
     uint8 porth_dip = SW1_dip();
     if((porth_dip & DATA_BITMASK) == DATA_BITMASK) return TRUE;
     else return FALSE;
-} /* explore_mode */
+}*/ /* explore_mode */
 
 /*
  *  NAME
