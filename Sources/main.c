@@ -34,14 +34,37 @@
 #define BUTTON1_BITMASK 0x80
 #define BUTTON2_BITMASK 0x40
 
+/* PITCHES */
+#define c 2867
+#define d 2554
+#define e 2276
+#define f 2148
+#define g 1914
+#define a 1705
+#define b 1519
+#define C 1434
+#define D 1277
+#define E 1138
+#define F 1074
+#define G 957
+#define A 853
+#define B 760
+#define CC 717
+#define DD 639
+
 
 /* PROTOTYPES */
 float abs_value(float input_val);
+void start_jingle(void);
+void sound_effect(void);
+void explore_jingle(void);
+void end_jingle(void);
 
 /* GLOBALS */
 uint8 g_done = FALSE;
 int motor_left_speed = 0;
 int motor_right_speed = 0;
+uint16 g_pitch;
 
 /* INTERRUPTS */
 // Read high times from PWM 1
@@ -53,6 +76,10 @@ void interrupt 9 handler1()
 void interrupt 10 handler2()
 {
     HILOtimes2();
+}
+void interrupt 13 noise_maker()
+{
+    tone(g_pitch);
 }
 
 
@@ -91,7 +118,7 @@ void main(void) {
   motor1_init();
   motor2_init();
   
-  
+  sound_init(); 
   eeprom_init();
   
   _asm cli                                  // enable interrupts
@@ -102,6 +129,7 @@ void main(void) {
   PIEH |= SW5_BITMASK;
   
   type_lcd(WELCOME_LABEL);
+  start_jingle();
   ms_delay(2000);
   
   clear_lcd();
@@ -117,6 +145,7 @@ void main(void) {
   {
         if((PORTA & BUTTON1_BITMASK) == 0)
         {
+            sound_effect();
             is_explore_mode = TRUE;
             set_lcd_addr(EXPLORE_SELECT_ADDR);
             data8(SELECTOR);
@@ -124,7 +153,8 @@ void main(void) {
             data8(' ');   
         } /* if */
         if((PORTA & BUTTON2_BITMASK) == 0)
-        {
+        {    
+            sound_effect();
             is_explore_mode = FALSE;
             set_lcd_addr(DATA_SELECT_ADDR);
             data8(SELECTOR);
@@ -132,7 +162,7 @@ void main(void) {
             data8(' ');   
         } /* if */
   } /* while */
-  
+  sound_effect();
   ms_delay(50);
   clear_lcd();
   
@@ -146,12 +176,14 @@ void main(void) {
         {
             if((data_freq < 60) && (PORTA & BUTTON1_BITMASK) == 0)
             {
+                sound_effect();
                 data_freq += 5;
                 set_lcd_addr(LINE_2);
                 write_int_lcd(data_freq);   
             } /* if */
             if((data_freq > 10) && (PORTA & BUTTON2_BITMASK) == 0)
             {
+                sound_effect();
                 data_freq -= 5;
                 set_lcd_addr(LINE_2);
                 write_int_lcd(data_freq);  
@@ -160,6 +192,7 @@ void main(void) {
             ms_delay(50);
          } /* while */
         
+        explore_jingle();
         clear_lcd();
         set_lcd_addr(LINE_1);
         type_lcd("EXPLORING...");
@@ -228,37 +261,44 @@ void main(void) {
             
         } /* while */
         
-        complete_write();
-        
-        
-        
+        complete_write();      
+               
         
   } /* if */
   else
-  {
+  {        
         set_lcd_addr(LINE_1);
         type_lcd("PRESS ENTER FOR");
         set_lcd_addr(LINE_2);
         type_lcd("DATA");
         while((PORTA & ENTER_BITMASK) == ENTER_BITMASK);
+        sound_effect();
         clear_lcd();
         set_lcd_addr(LINE_1);
         type_lcd("PRINTING DATA...");
         
         output_init(9600);
         data_size = read_data_size();
-        write_labels();
+        write_labels();        
         
         for(index = 0; index < data_size; index++)
         {
             data_log = get_data();
             write_to_putty(data_log);
         } /* for */
+        
+        clear_lcd();
+        set_lcd_addr(LINE_1);
+        type_lcd("DONE.");
+        while(!g_done);
+        
   } /* else */
   
   clear_lcd();
   set_lcd_addr(LINE_1);
   type_lcd("Good Bye");
+  end_jingle();
+
  
 } /* main */
 
@@ -312,3 +352,81 @@ void interrupt 25 detect_switches(void)
     /* clear the flag */
     PIFH = clear_bits;   
 } /* end_program */
+
+void start_jingle(void)
+{
+    uint8 array_size = 3;
+    uint8 index;
+    uint16 note[] = 
+    {
+        C, E, F
+    };
+    uint8 length[] = 
+    {
+        250, 250, 500
+    };
+    
+    for(index = 0; index < array_size; index++)
+    {
+        g_pitch = note[index];
+        sound_on();
+        ms_delay(length[index]);   
+    }
+    sound_off();
+    _asm cli;
+}
+
+void sound_effect(void)
+{
+    g_pitch = C;
+    sound_on();
+    ms_delay(250);
+    sound_off();
+    _asm cli;
+}
+
+void explore_jingle(void)
+{
+    uint8 array_size = 6;
+    uint8 index;
+    uint16 note[] = 
+    {
+        C, E, C, F, G, A
+    };
+    uint8 length[] = 
+    {
+        750, 500, 500, 500, 500, 1000
+    };
+    
+    for(index = 0; index < array_size; index++)
+    {
+        g_pitch = note[index];
+        sound_on();
+        ms_delay(length[index]);   
+    }
+    sound_off();
+    _asm cli;   
+}
+
+void end_jingle(void)
+{
+    uint8 array_size = 3;
+    uint8 index;
+    uint16 note[] = 
+    {
+        F, E, C
+    };
+    uint8 length[] = 
+    {
+        250, 250, 500
+    };
+    
+    for(index = 0; index < array_size; index++)
+    {
+        g_pitch = note[index];
+        sound_on();
+        ms_delay(length[index]);   
+    }
+    sound_off();
+    _asm cli;   
+}
