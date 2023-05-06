@@ -146,13 +146,13 @@ void main(void) {
         {
             if((data_freq < 60) && (PORTA & BUTTON1_BITMASK) == 0)
             {
-                data_freq += 10;
+                data_freq += 5;
                 set_lcd_addr(LINE_2);
                 write_int_lcd(data_freq);   
             } /* if */
             if((data_freq > 10) && (PORTA & BUTTON2_BITMASK) == 0)
             {
-                data_freq -= 10;
+                data_freq -= 5;
                 set_lcd_addr(LINE_2);
                 write_int_lcd(data_freq);  
             } /* if */
