@@ -67,6 +67,8 @@ int motor_right_speed = 0;
 uint16 g_pitch;
 uint8 g_log_front_collision = FALSE;
 uint8 g_log_rear_collision = FALSE;
+uint8 g_stop_forward_movement = FALSE;
+uint8 g_stop_backward_movement = FALSE;
 
 /* INTERRUPTS */
 // Read high times from PWM 1
@@ -96,6 +98,8 @@ void main(void) {
   uint8 true_false = FALSE;
   uint8 is_explore_mode = TRUE;
   uint8 data_freq = 10;                     //default value
+  uint8 front_collision_logged = FALSE;
+  uint8 rear_collision_logged = FALSE;
   
   char LR_decimal = 0.0;
   char FB_decimal = 0.0;
@@ -220,21 +224,6 @@ void main(void) {
               
             } /* if */
             
-            if(g_log_front_collision)
-            {
-                g_log_front_collision = FALSE;
-                time_of_data = get_time();
-                data_log = make_data_log(time_of_data, 0, 0, TRUE, FALSE);
-                write_data(data_log);
-            }
-            
-            if(g_log_rear_collision)
-            {
-                g_log_rear_collision = FALSE;
-                time_of_data = get_time();
-                data_log = make_data_log(time_of_data, 0, 0, FALSE, TRUE);
-                write_data(data_log);
-            }
             
             // Channel 1: left/right
             // Channel 2: forward/backward
@@ -271,6 +260,35 @@ void main(void) {
               write_int_lcd(motor_right_speed);
             }
             
+            if(g_stop_forward_movement)
+            {
+                motor_left_speed = (motor_left_speed > 0) ? 0 : motor_left_speed;
+                motor_right_speed = (motor_right_speed > 0) ? 0 : motor_right_speed;
+                g_stop_forward_movement = FALSE;
+                if(!front_collision_logged)
+                {
+                    time_of_data = get_time();
+                    data_log = make_data_log(time_of_data, 0, 0, TRUE, FALSE);
+                    write_data(data_log);
+                    front_collision_logged = TRUE;
+                }
+            }
+            else front_collision_logged = FALSE;
+            
+            if(g_stop_backward_movement)
+            {
+                motor_left_speed = (motor_left_speed < 0) ? 0 : motor_left_speed;
+                motor_right_speed = (motor_right_speed < 0) ? 0 : motor_right_speed;
+                g_stop_backward_movement = FALSE;
+                if(!rear_collision_logged)
+                {
+                    time_of_data = get_time();
+                    data_log = make_data_log(time_of_data, 0, 0, FALSE, TRUE);
+                    write_data(data_log);
+                    rear_collision_logged = TRUE;
+                }
+            }
+            else rear_collision_logged = FALSE;
             
             // Set motor speed
             set_motor_speed(1, motor_left_speed);
@@ -375,14 +393,14 @@ void interrupt 25 detect_switches(void)
     if((pifh_state & SW4_BITMASK) == SW4_BITMASK)
     {
         clear_bits |= SW4_BITMASK;
-        g_log_front_collision = TRUE;
+        g_stop_forward_movement = TRUE;
         
     } /* if */
     
     if((pifh_state & SW3_BITMASK) == SW3_BITMASK)
     {
         clear_bits |= SW3_BITMASK;
-        g_log_rear_collision = TRUE;
+        g_stop_backward_movement = TRUE;
         
     } /* if */
     
