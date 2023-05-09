@@ -1,0 +1,1 @@
+char read_battery_level(void);

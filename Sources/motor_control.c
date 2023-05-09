@@ -9,7 +9,8 @@
 // OUTPUTS:
 //         (int) modifies global inputs to their scaled values 
 extern int motor_left_speed;
-extern int motor_right_speed; 
+extern int motor_right_speed;
+
 
 void scale_motor_speed(void)
 {
@@ -38,11 +39,14 @@ void scale_motor_speed(void)
 
 
 
+extern char g_low_battery_5_percent; 
 
 // A function to set the PWM output to control the speed of the motors.
+// If the battery level is under 10%, the robot will not move.
 // INPUTS:
 //         (char) motor_num: used to select motor 1 or 2 (PP1 and PP2)
 //         (char) speed_plus_minus_100: a signed char between -100 and 100
+//         (char) global variable g_low_battery_5_percent
 // OUTPUTS:
 //         none 
 void set_motor_speed(char motor_num, char speed_plus_minus_100)
@@ -55,7 +59,12 @@ void set_motor_speed(char motor_num, char speed_plus_minus_100)
   // to (0 to 25.5) or (0ms to 1ms). An offset of 25.5 (1ms) is added to
   // give a final range of (1ms to 2ms).
   speed_1ms_to_2ms = 25.5+(((speed_plus_minus_100 + 100.0)/200.0)*25.5);
-    
+  
+  if (g_low_battery_5_percent)
+  {
+    speed_1ms_to_2ms = 0;
+  }
+  
   if (motor_num == 1)
   {
     motor1(speed_1ms_to_2ms);

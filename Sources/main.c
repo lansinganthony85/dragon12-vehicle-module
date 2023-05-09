@@ -18,6 +18,7 @@
 //#include "csc202_lab_support.h"     /* include CSC202 Support */
 #include "rc_read.h"                /* include code to read RC PWM */
 #include "motor_control.h"
+#include "battery_monitor.h"
 
 /* DEFINITIONS*/
 #define MOTOR_SPEED_MULTIPLIER             100.0
@@ -260,10 +261,14 @@ void main(void) {
               write_int_lcd(motor_right_speed);
             }
             
+            // If ultrasonic detects object in front of robot, stop
+            // forward movement and log timestamp
             if(g_stop_forward_movement)
             {
+                // Set motor values to zero if they're positive
                 motor_left_speed = (motor_left_speed > 0) ? 0 : motor_left_speed;
                 motor_right_speed = (motor_right_speed > 0) ? 0 : motor_right_speed;
+                
                 g_stop_forward_movement = FALSE;
                 if(!front_collision_logged)
                 {
@@ -275,6 +280,8 @@ void main(void) {
             }
             else front_collision_logged = FALSE;
             
+            // If ultrasonic detects object behind robot, stop
+            // backwards movement and log timestamp
             if(g_stop_backward_movement)
             {
                 motor_left_speed = (motor_left_speed < 0) ? 0 : motor_left_speed;
@@ -289,6 +296,27 @@ void main(void) {
                 }
             }
             else rear_collision_logged = FALSE;
+            
+            // Check battery level when not in motion
+            if ((motor_left_speed == 0) && (motor_right_speed == 0))
+            {
+              battery_level = read_battery_level();
+            }
+            
+            // Make sound if battery is under 20%
+            if ((battery_level <= 20) && (!g_low_battery_20_percent))
+            {
+              sound_effect();
+              g_low_battery_20_percent = TRUE; 
+            }
+            // If battery is below 5%, set a flag to disable motion
+            if ((battery_level <= 5) && (!g_low_battery_5_percent))
+            {
+              sound_effect();
+              sound_effect();
+              sound_effect();
+              g_low_battery_5_percent = TRUE; 
+            }
             
             // Set motor speed
             set_motor_speed(1, motor_left_speed);
