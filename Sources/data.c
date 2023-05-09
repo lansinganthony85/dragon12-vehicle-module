@@ -12,7 +12,6 @@
 /* GLOBALS */
 uint16 g_data_size = 0;             // keep track of the amoutn of data added to eeprom
 
-
 /*
  *  NAME
  *      write_data
