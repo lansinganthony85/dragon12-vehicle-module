@@ -21,7 +21,7 @@
 
 /* DEFINITIONS*/
 #define MOTOR_SPEED_MULTIPLIER             100.0
-#define BATTERY_ADC_CHANNEL                3 // Port A bit 11
+
 
 
 #define WELCOME_LABEL "WELCOME"
@@ -30,9 +30,9 @@
 #define SELECTOR '*'
 #define EXPLORE_SELECT_ADDR 0x07
 #define DATA_SELECT_ADDR 0x48
-#define ENTER_BITMASK 0x20
-#define BUTTON1_BITMASK 0x80
-#define BUTTON2_BITMASK 0x40
+#define ENTER_BITMASK 0x04
+#define BUTTON1_BITMASK 0x01
+#define BUTTON2_BITMASK 0x02
 
 /* PITCHES */
 #define c 2867
@@ -141,9 +141,9 @@ void main(void) {
   
   DDRA = 0x00;
   
-  while((PORTA & ENTER_BITMASK) == ENTER_BITMASK)
+  while((PTM & ENTER_BITMASK) == ENTER_BITMASK)
   {
-        if((PORTA & BUTTON1_BITMASK) == 0)
+        if((PTM & BUTTON1_BITMASK) == 0)
         {
             sound_effect();
             is_explore_mode = TRUE;
@@ -152,7 +152,7 @@ void main(void) {
             set_lcd_addr(DATA_SELECT_ADDR);
             data8(' ');   
         } /* if */
-        if((PORTA & BUTTON2_BITMASK) == 0)
+        if((PTM & BUTTON2_BITMASK) == 0)
         {    
             sound_effect();
             is_explore_mode = FALSE;
@@ -172,16 +172,16 @@ void main(void) {
         type_lcd("DATA FREQUENCY: ");
         set_lcd_addr(LINE_2);
         write_int_lcd(data_freq);
-        while((PORTA & ENTER_BITMASK) == ENTER_BITMASK)
+        while((PTM & ENTER_BITMASK) == ENTER_BITMASK)
         {
-            if((data_freq < 60) && (PORTA & BUTTON1_BITMASK) == 0)
+            if((data_freq < 60) && (PTM & BUTTON1_BITMASK) == 0)
             {
                 sound_effect();
                 data_freq += 5;
                 set_lcd_addr(LINE_2);
                 write_int_lcd(data_freq);   
             } /* if */
-            if((data_freq > 10) && (PORTA & BUTTON2_BITMASK) == 0)
+            if((data_freq > 10) && (PTM & BUTTON2_BITMASK) == 0)
             {
                 sound_effect();
                 data_freq -= 5;
@@ -256,7 +256,7 @@ void main(void) {
             set_motor_speed(1, motor_left_speed);
             set_motor_speed(2, motor_right_speed);
 
-            ADC_battery_reading = ad1conv(BATTERY_ADC_CHANNEL);
+            
 
             
         } /* while */
