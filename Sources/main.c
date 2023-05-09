@@ -21,7 +21,7 @@
 
 /* DEFINITIONS*/
 #define MOTOR_SPEED_MULTIPLIER             100.0
-#define BATTERY_ADC_CHANNEL                3 // Port A bit 11
+
 
 
 #define WELCOME_LABEL "WELCOME"
@@ -30,9 +30,15 @@
 #define SELECTOR '*'
 #define EXPLORE_SELECT_ADDR 0x07
 #define DATA_SELECT_ADDR 0x48
+<<<<<<< HEAD
 #define ENTER_BITMASK 0x04                  // Connected to PM2
 #define BUTTON1_BITMASK 0x02                // Connected to PM1
 #define BUTTON2_BITMASK 0x04                // Connected to PM0
+=======
+#define ENTER_BITMASK 0x04
+#define BUTTON1_BITMASK 0x01
+#define BUTTON2_BITMASK 0x02
+>>>>>>> 4d201544c85a5384e6caa2aa4181023b1a672906
 
 /* PITCHES */
 #define c 2867
@@ -256,7 +262,7 @@ void main(void) {
             set_motor_speed(1, motor_left_speed);
             set_motor_speed(2, motor_right_speed);
 
-            ADC_battery_reading = ad1conv(BATTERY_ADC_CHANNEL);
+            
 
             
         } /* while */
