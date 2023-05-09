@@ -30,15 +30,9 @@
 #define SELECTOR '*'
 #define EXPLORE_SELECT_ADDR 0x07
 #define DATA_SELECT_ADDR 0x48
-<<<<<<< HEAD
 #define ENTER_BITMASK 0x04                  // Connected to PM2
 #define BUTTON1_BITMASK 0x02                // Connected to PM1
-#define BUTTON2_BITMASK 0x04                // Connected to PM0
-=======
-#define ENTER_BITMASK 0x04
-#define BUTTON1_BITMASK 0x01
-#define BUTTON2_BITMASK 0x02
->>>>>>> 4d201544c85a5384e6caa2aa4181023b1a672906
+#define BUTTON2_BITMASK 0x01                // Connected to PM0
 
 /* PITCHES */
 #define c 2867
@@ -71,6 +65,8 @@ uint8 g_done = FALSE;
 int motor_left_speed = 0;
 int motor_right_speed = 0;
 uint16 g_pitch;
+uint8 g_log_front_collision = FALSE;
+uint8 g_log_rear_collision = FALSE;
 
 /* INTERRUPTS */
 // Read high times from PWM 1
@@ -133,6 +129,8 @@ void main(void) {
   PIFH = SETALL;                            // clear port h flags
   PPSH = CLEAR;
   PIEH |= SW5_BITMASK;
+  PIEH |= SW4_BITMASK;
+  PIEH |= SW3_BITMASK;
   
   type_lcd(WELCOME_LABEL);
   start_jingle();
@@ -215,12 +213,28 @@ void main(void) {
                 time_of_data = get_time();
                 light = get_light_level();
                 temperature = get_temp();
-                data_log = make_data_log(time_of_data, temperature, light, 0);
+                data_log = make_data_log(time_of_data, temperature, light, FALSE, FALSE);
                 write_data(data_log);
                 ms_delay(2000);
 
               
             } /* if */
+            
+            if(g_log_front_collision)
+            {
+                g_log_front_collision = FALSE;
+                time_of_data = get_time();
+                data_log = make_data_log(time_of_data, 0, 0, TRUE, FALSE);
+                write_data(data_log);
+            }
+            
+            if(g_log_rear_collision)
+            {
+                g_log_rear_collision = FALSE;
+                time_of_data = get_time();
+                data_log = make_data_log(time_of_data, 0, 0, FALSE, TRUE);
+                write_data(data_log);
+            }
             
             // Channel 1: left/right
             // Channel 2: forward/backward
@@ -335,6 +349,9 @@ float abs_value(float input_val)
  *      ISR routine that checks whether SW5 was pressed.
  *      If SW5 pressed, then the flag is set for code to be handled
  *      in main where the program is ended.
+ 
+ *      Front collision in D2 connected to PH1 or SW4
+ *      Rear collision in D3 connected to PH2 or SW3
  *
  *  PARAMETERS
  *      None
@@ -352,6 +369,20 @@ void interrupt 25 detect_switches(void)
     {
         g_done = TRUE;
         clear_bits |= SW5_BITMASK;
+        
+    } /* if */
+    
+    if((pifh_state & SW4_BITMASK) == SW4_BITMASK)
+    {
+        clear_bits |= SW4_BITMASK;
+        g_log_front_collision = TRUE;
+        
+    } /* if */
+    
+    if((pifh_state & SW3_BITMASK) == SW3_BITMASK)
+    {
+        clear_bits |= SW3_BITMASK;
+        g_log_rear_collision = TRUE;
         
     } /* if */
     

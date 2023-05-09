@@ -24,14 +24,14 @@ typedef struct
     Clock clock;
     uint16 temperature;
     uint16 light_level;                       
-    uint8 collision_detected;       
+    uint8 front_collision_detected;
+    uint8 rear_collision_detected;       
 } g_collected_data;
 
 /* PROTOTYPES */
 void write_data(g_collected_data);
 g_collected_data get_data(void);
-g_collected_data make_data_log(Clock, uint16, uint16, uint8);
-uint8 explore_mode(void);
+g_collected_data make_data_log(Clock, uint16, uint16, uint8, uint8);
 uint16 get_data_size(void);
 
 #endif

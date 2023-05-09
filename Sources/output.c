@@ -46,12 +46,27 @@ void write_to_putty(g_collected_data data_log)
     print_time(data_log.clock);
     outchar1(TAB);
     outchar1(TAB);
-    print_int(data_log.light_level);
-    outchar1(TAB);
-    outchar1(TAB);
-    print_int(data_log.temperature);
-    outchar1(DEGREE_SYMBOL);
-    outchar1('F');
+    
+    if(data_log.front_collision_detected || data_log.rear_collision_detected)
+    {
+        if(data_log.front_collision_detected)
+        {
+            alt_print(FRONT_COLLISION);
+        }
+        else
+        {
+            alt_print(REAR_COLLISION);
+        }
+    }
+    else
+    {
+        print_int(data_log.light_level);
+        outchar1(TAB);
+        outchar1(TAB);
+        print_int(data_log.temperature);
+        outchar1(DEGREE_SYMBOL);
+        outchar1('F');
+    }
     outchar1(NEW_LINE);
     outchar1(RETURN_LINE);           
 } /* write_to_putty */

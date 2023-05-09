@@ -36,7 +36,8 @@ void write_data(g_collected_data data_struct)
     write_char(data_struct.clock.second);
     write_int(data_struct.temperature);
     write_int(data_struct.light_level);
-    write_char(data_struct.collision_detected);
+    write_char(data_struct.front_collision_detected);
+    write_char(data_struct.rear_collision_detected);
     
     g_data_size++;
     
@@ -63,7 +64,8 @@ g_collected_data get_data(void)
     data_to_get.clock.second = read_char();
     data_to_get.temperature = read_int();
     data_to_get.light_level = read_int();
-    data_to_get.collision_detected = read_char();
+    data_to_get.front_collision_detected = read_char();
+    data_to_get.rear_collision_detected = read_char();
     
     return data_to_get;
 } /* get_data */
@@ -82,13 +84,14 @@ g_collected_data get_data(void)
  *  RETURN
  *      g_collected_data data_log
  */
-g_collected_data make_data_log(Clock clock, uint16 temperature, uint16 light_level, uint8 collision_detected)
+g_collected_data make_data_log(Clock clock, uint16 temperature, uint16 light_level, uint8 front_collision_detected, uint8 rear_collision_detected)
 {
     g_collected_data data_log;
     data_log.clock = clock;
     data_log.temperature = temperature;
     data_log.light_level = light_level;
-    data_log.collision_detected = collision_detected;
+    data_log.front_collision_detected = front_collision_detected;
+    data_log.rear_collision_detected = rear_collision_detected;
     
     return data_log;
 } /* make_data_log */
