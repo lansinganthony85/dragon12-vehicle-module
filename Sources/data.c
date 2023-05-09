@@ -9,16 +9,9 @@
  
 #include "data.h"
 
-#define DATA_BITMASK 0x80
+/* GLOBALS */
+uint16 g_data_size = 0;             // keep track of the amoutn of data added to eeprom
 
-uint16 g_data_size = 0;
-/*
-uint8 is_explore_mode(void)
-{
-    uint8 porth_dip = SW1_dip();
-    if((porth_dip & DATA_BITMASK) == DATA_BITMASK) return TRUE;
-    else return FALSE;
-}*/ /* explore_mode */
 
 /*
  *  NAME
@@ -49,6 +42,19 @@ void write_data(g_collected_data data_struct)
     
 } /* write_data */
 
+/*
+ *  NAME
+ *      get_data
+ *
+ *  DESCRIPTION
+ *      This function reads a data entry from eeprom memory and returns as a struct.
+ *
+ *  PARAMETERS
+ *      None
+ *
+ *  RETURN
+ *      g_collected_data data_to_get
+ */
 g_collected_data get_data(void)
 {
     g_collected_data data_to_get;
@@ -62,6 +68,20 @@ g_collected_data get_data(void)
     return data_to_get;
 } /* get_data */
 
+/*
+ *  NAME
+ *      make_data_log
+ *
+ *  DESCRIPTION
+ *      This function groups values into a struct and returns to be handled by the
+ *      calling function.
+ *
+ *  PARAMETERS
+ *      Clock clock, uint16 temperature, uint16 light_level, uint8 collision detected
+ *
+ *  RETURN
+ *      g_collected_data data_log
+ */
 g_collected_data make_data_log(Clock clock, uint16 temperature, uint16 light_level, uint8 collision_detected)
 {
     g_collected_data data_log;
@@ -71,9 +91,22 @@ g_collected_data make_data_log(Clock clock, uint16 temperature, uint16 light_lev
     data_log.collision_detected = collision_detected;
     
     return data_log;
-}
+} /* make_data_log */
 
+/*
+ *  NAME
+ *      get_data_size
+ *
+ *  DESCRIPTION
+ *      This function returns the current size of the data written to the eeprom.
+ *
+ *  PARAMETERS
+ *      None
+ *
+ *  RETURN
+ *      uint16 g_data_size
+ */
 uint16 get_data_size(void)
 {
     return g_data_size;
-}
+} /* get_data_size */

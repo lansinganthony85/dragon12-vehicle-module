@@ -10,6 +10,9 @@
 #ifndef H_data
 #define H_data
 
+/* GLOBALS */
+#define DATA_BITMASK 0x80
+
 /* the following struct is used to store the data that is collected by the vehicle.
     The struct serves as the structure of the eeprom so that we can read and write
     to it without worrying about the different sizes of the datatypes. Since data
@@ -19,11 +22,12 @@
 typedef struct   
 {
     Clock clock;
-    uint16 temperature;              // 2 bytes size
-    uint16 light_level;             // 2 bytes size             
-    uint8 collision_detected;       // 1 byte size
-} g_collected_data; // total size is 8 bytes
+    uint16 temperature;
+    uint16 light_level;                       
+    uint8 collision_detected;       
+} g_collected_data;
 
+/* PROTOTYPES */
 void write_data(g_collected_data);
 g_collected_data get_data(void);
 g_collected_data make_data_log(Clock, uint16, uint16, uint8);

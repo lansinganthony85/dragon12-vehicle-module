@@ -8,6 +8,10 @@
 #ifndef H_clock
 #define H_clock
 
+/* GLOBALS */
+#define TIME_COUNT_LIMIT    60          // when seconds and minutes to roll over to zero
+#define ONE_SECOND          100         // the number of RTIs before 1 second has passed
+
 typedef struct 
 {
     uint8 hour;
@@ -15,6 +19,7 @@ typedef struct
     uint8 second;   
 } Clock;
 
+/* PROTOTYPES */
 void clock_init(void);
 void increment_clock(void);
 void interrupt 7 clock_timer(void);

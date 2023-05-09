@@ -30,21 +30,27 @@ void output_init(uint16 baudrate)
 
 void write_labels(void)
 {
-    alt_print(TIME_LABEL);    outchar1(TAB);
+    alt_print(TIME_LABEL);
     outchar1(TAB);
-    alt_print(LIGHT_LABEL);    outchar1(TAB);
     outchar1(TAB);
-    alt_print(TEMP_LABEL);    outchar1(NEW_LINE);
+    alt_print(LIGHT_LABEL);
+    outchar1(TAB);
+    outchar1(TAB);
+    alt_print(TEMP_LABEL);
+    outchar1(NEW_LINE);
     outchar1(RETURN_LINE);       
 } /* write_labels */
 
 void write_to_putty(g_collected_data data_log)
 {
-    print_time(data_log.clock);    outchar1(TAB);
+    print_time(data_log.clock);
     outchar1(TAB);
-    print_int(data_log.light_level);    outchar1(TAB);
     outchar1(TAB);
-    print_int(data_log.temperature);    outchar1(DEGREE_SYMBOL);
+    print_int(data_log.light_level);
+    outchar1(TAB);
+    outchar1(TAB);
+    print_int(data_log.temperature);
+    outchar1(DEGREE_SYMBOL);
     outchar1('F');
     outchar1(NEW_LINE);
     outchar1(RETURN_LINE);           
@@ -86,7 +92,8 @@ void print_time(Clock clock)
 {
     if(clock.hour < 10)
     {
-        print_int(0);        print_int(clock.hour);
+        print_int(0);
+        print_int(clock.hour);
     }
     else print_int(clock.hour);
     
