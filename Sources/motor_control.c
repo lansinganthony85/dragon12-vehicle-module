@@ -60,6 +60,7 @@ void set_motor_speed(char motor_num, char speed_plus_minus_100)
   // give a final range of (1ms to 2ms).
   speed_1ms_to_2ms = 25.5+(((speed_plus_minus_100 + 100.0)/200.0)*25.5);
   
+  // Refuse to move if battery level is below 5%
   if (g_low_battery_5_percent)
   {
     speed_1ms_to_2ms = 0;
