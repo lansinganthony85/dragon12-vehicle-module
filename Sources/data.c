@@ -39,6 +39,8 @@ void write_data(g_collected_data data_struct)
     write_char(data_struct.front_collision_detected);
     write_char(data_struct.rear_collision_detected);
     
+    write_disable();
+    
     g_data_size++;
     
 } /* write_data */
