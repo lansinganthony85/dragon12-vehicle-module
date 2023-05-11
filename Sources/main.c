@@ -192,7 +192,6 @@ void main(void) {
                 temperature = get_temp();
                 data_log = make_data_log(time_of_data, temperature, light, FALSE, FALSE);
                 write_data(data_log);
-                ms_delay(2000);
 
               
             } /* if */
