@@ -44,10 +44,6 @@ float abs_value(float input_val);
 uint8 g_done = FALSE;
 int motor_left_speed = 0;
 int motor_right_speed = 0;
-uint8 g_log_front_collision = FALSE;
-uint8 g_log_rear_collision = FALSE;
-uint8 g_stop_forward_movement = FALSE;
-uint8 g_stop_backward_movement = FALSE;
 
 /* INTERRUPTS */
 // Read high times from PWM 1
@@ -108,8 +104,6 @@ void main(void) {
   PIFH = SETALL;                            // clear port h flags
   PPSH = CLEAR;
   PIEH |= SW5_BITMASK;
-  PIEH |= SW4_BITMASK;
-  PIEH |= SW3_BITMASK;
   
   type_lcd(WELCOME_LABEL);
   start_jingle();
@@ -237,13 +231,12 @@ void main(void) {
             
             // If ultrasonic detects object in front of robot, stop
             // forward movement and log timestamp
-            if(g_stop_forward_movement)
+            if((PTH & SW4_BITMASK) == 0)
             {
                 // Set motor values to zero if they're positive
                 motor_left_speed = (motor_left_speed > 0) ? 0 : motor_left_speed;
                 motor_right_speed = (motor_right_speed > 0) ? 0 : motor_right_speed;
                 
-                g_stop_forward_movement = FALSE;
                 if(!front_collision_logged)
                 {
                     time_of_data = get_time();
@@ -252,15 +245,17 @@ void main(void) {
                     front_collision_logged = TRUE;
                 }
             }
-            else front_collision_logged = FALSE;
+            else
+            {
+                front_collision_logged = FALSE;   
+            }
             
             // If ultrasonic detects object behind robot, stop
             // backwards movement and log timestamp
-            if(g_stop_backward_movement)
+            if((PTH & SW3_BITMASK) == 0)
             {
                 motor_left_speed = (motor_left_speed < 0) ? 0 : motor_left_speed;
                 motor_right_speed = (motor_right_speed < 0) ? 0 : motor_right_speed;
-                g_stop_backward_movement = FALSE;
                 if(!rear_collision_logged)
                 {
                     time_of_data = get_time();
@@ -269,7 +264,10 @@ void main(void) {
                     rear_collision_logged = TRUE;
                 }
             }
-            else rear_collision_logged = FALSE;
+            else
+            {
+                rear_collision_logged = FALSE;   
+            }
             
             // Check battery level when not in motion
             if ((motor_left_speed == 0) && (motor_right_speed == 0))
@@ -369,9 +367,6 @@ float abs_value(float input_val)
  *      ISR routine that checks whether SW5 was pressed.
  *      If SW5 pressed, then the flag is set for code to be handled
  *      in main where the program is ended.
- 
- *      Front collision in D2 connected to PH1 or SW4
- *      Rear collision in D3 connected to PH2 or SW3
  *
  *  PARAMETERS
  *      None
@@ -389,20 +384,6 @@ void interrupt 25 detect_switches(void)
     {
         g_done = TRUE;
         clear_bits |= SW5_BITMASK;
-        
-    } /* if */
-    
-    if((pifh_state & SW4_BITMASK) == SW4_BITMASK)
-    {
-        clear_bits |= SW4_BITMASK;
-        g_stop_forward_movement = TRUE;
-        
-    } /* if */
-    
-    if((pifh_state & SW3_BITMASK) == SW3_BITMASK)
-    {
-        clear_bits |= SW3_BITMASK;
-        g_stop_backward_movement = TRUE;
         
     } /* if */
     
