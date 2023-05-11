@@ -8,8 +8,12 @@
  *      main.asm in order to accomplish this.
  *
  */
- 
+
 #include "sound.h"
+#include <hidef.h>      /* common defines and macros */
+#include <mc9s12dg256.h>     /* derivative information */
+#pragma LINK_INFO DERIVATIVE "mc9s12dg256b"
+#include "main_asm.h" /* interface to the assembly module */
 
 /* GLOBAL */
 uint16 g_pitch;
@@ -50,7 +54,7 @@ void interrupt 13 noise_maker()
  */ 
 void start_jingle(void)
 {
-    TIE = 0x00;                             // Disables interrupts
+    
     
     uint8 incrementer;                      // to increment through arrays
     
@@ -92,11 +96,11 @@ void start_jingle(void)
  */ 
 void sound_effect(void)
 {
-    TIE = 0x00;                             // Disables interrupts
+    //asm(bclr TIE, #$FF);                    // Disables interrupts
     
     g_pitch = C;
     sound_on();
-    ms_delay(EIGTH_NOTE);               // wait for note to play intended duration
+    ms_delay(EIGTH_NOTE);                   // wait for note to play intended duration
     stop_sound();
 } /* sound_effect */
 
@@ -115,7 +119,7 @@ void sound_effect(void)
  */ 
 void explore_jingle(void)
 {
-    TIE = 0x00;                             // Disables interrupts
+    //asm(bclr TIE, #$FF);                    // Disables interrupts
     
     uint8 incrementer;                      // to increment through arrays
     
@@ -157,7 +161,7 @@ void explore_jingle(void)
  */
 void end_jingle(void)
 {
-    TIE = 0x00;                             // Disables interrupts
+    //asm(bclr TIE, #$FF);                    // Disables interrupts
     
     uint8 incrementer;                      // to increment through arrays
     
