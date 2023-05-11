@@ -45,6 +45,9 @@ uint8 g_done = FALSE;
 int motor_left_speed = 0;
 int motor_right_speed = 0;
 
+char g_low_battery_20_percent = FALSE;
+char g_low_battery_5_percent = FALSE;
+
 /* INTERRUPTS */
 // Read high times from PWM 1
 void interrupt 9 handler1()
@@ -236,6 +239,7 @@ void main(void) {
                 // Set motor values to zero if they're positive
                 motor_left_speed = (motor_left_speed > 0) ? 0 : motor_left_speed;
                 motor_right_speed = (motor_right_speed > 0) ? 0 : motor_right_speed;
+                leds_on(TRUE);
                 
                 if(!front_collision_logged)
                 {
@@ -247,6 +251,7 @@ void main(void) {
             }
             else
             {
+                leds_off();
                 front_collision_logged = FALSE;   
             }
             
@@ -256,6 +261,8 @@ void main(void) {
             {
                 motor_left_speed = (motor_left_speed < 0) ? 0 : motor_left_speed;
                 motor_right_speed = (motor_right_speed < 0) ? 0 : motor_right_speed;
+                leds_on(TRUE);
+                
                 if(!rear_collision_logged)
                 {
                     time_of_data = get_time();
@@ -266,6 +273,7 @@ void main(void) {
             }
             else
             {
+                leds_off();
                 rear_collision_logged = FALSE;   
             }
             

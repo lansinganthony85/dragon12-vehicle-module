@@ -50,6 +50,8 @@ void interrupt 13 noise_maker()
  */ 
 void start_jingle(void)
 {
+    TIE = 0x00;                             // Disables interrupts
+    
     uint8 incrementer;                      // to increment through arrays
     
     /* the notes of the song */
@@ -90,6 +92,8 @@ void start_jingle(void)
  */ 
 void sound_effect(void)
 {
+    TIE = 0x00;                             // Disables interrupts
+    
     g_pitch = C;
     sound_on();
     ms_delay(EIGTH_NOTE);               // wait for note to play intended duration
@@ -111,6 +115,8 @@ void sound_effect(void)
  */ 
 void explore_jingle(void)
 {
+    TIE = 0x00;                             // Disables interrupts
+    
     uint8 incrementer;                      // to increment through arrays
     
     /* the notes of the jingle */
@@ -151,6 +157,8 @@ void explore_jingle(void)
  */
 void end_jingle(void)
 {
+    TIE = 0x00;                             // Disables interrupts
+    
     uint8 incrementer;                      // to increment through arrays
     
     /* the notes of the song */

@@ -7,7 +7,7 @@
 #define FRONT_RIGHT_INPUT_PIN         8
 #define BACK_INPUT_PIN                9
 #define PULSE_TO_CM_CONV_FACTOR       0.01723
-#define DISTANCE_THRESHOLD_CM         50
+#define DISTANCE_THRESHOLD_CM         10
 
 int cm_front_left = 0;
 int cm_front_right = 0;
@@ -37,6 +37,9 @@ void setup()
 {
   pinMode(INTERRUPT_OUTPUT_PIN_FRONT, OUTPUT);
   pinMode(INTERRUPT_OUTPUT_PIN_BACK, OUTPUT);
+
+  // initialize serial communication at 9600 bits per second:
+  Serial.begin(9600);
 }
 
 void loop()
@@ -46,6 +49,15 @@ void loop()
   cm_front_right = PULSE_TO_CM_CONV_FACTOR * readUltrasonicDistance(FRONT_RIGHT_INPUT_PIN, FRONT_RIGHT_INPUT_PIN);
   cm_back = PULSE_TO_CM_CONV_FACTOR * readUltrasonicDistance(BACK_INPUT_PIN, BACK_INPUT_PIN);
   
+
+  Serial.print("Front left: ");
+  Serial.println(cm_front_left);
+  Serial.print("Front right: ");
+  Serial.println(cm_front_right);
+  Serial.print("Back: ");
+  Serial.println(cm_back);
+
+
   // If either of the front sensors detect an object nearby, pull output pin low
   // Else pull high
   if ((cm_front_left <= DISTANCE_THRESHOLD_CM) || (cm_front_right <= DISTANCE_THRESHOLD_CM))
