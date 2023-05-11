@@ -122,6 +122,7 @@ void main(void) {
   
   DDRA = 0x00;
   
+  // ---- CODE FOR SETUP MENU OPTIONS ----
   while((PTM & ENTER_BITMASK) == ENTER_BITMASK)
   {
         if((PTM & BUTTON1_BITMASK) == 0)
@@ -149,6 +150,8 @@ void main(void) {
   
   if(is_explore_mode)
   {        
+        // ---- CODE FOR DATA FREQUENCY MENU ----
+        
         set_lcd_addr(LINE_1);
         type_lcd("DATA FREQUENCY: ");
         set_lcd_addr(LINE_2);
@@ -180,10 +183,12 @@ void main(void) {
         
         clock_init();
         environment_sensor_init();
-         
+        
+
+        // ---- CODE FOR WHEN ROBOT IS RUNNING ----        
         while(!g_done)
         {
-            // Loops until button is pressed to exit explore mode
+            // Only run when true_false is set true by RTI handler
             true_false = is_collect_time(data_freq);
             if(true_false)
             {
@@ -206,31 +211,9 @@ void main(void) {
             motor_left_speed = (FB_decimal + LR_decimal);
             motor_right_speed = (FB_decimal - LR_decimal);
             
-            
-            // Only print to LCD if dip SW1 is HIGH
-            dip_switch_read = SW1_dip();
-            if ((dip_switch_read & 0x40) == 0x00)
-            {
-              // Display un-scaled inputs on LCD
-              set_lcd_addr(0x00);
-              write_int_lcd(motor_left_speed);
-              type_lcd("  ");
-              write_int_lcd(motor_right_speed); 
-            }
-            
 
             scale_motor_speed();
             
-            
-            
-            if ((dip_switch_read & 0x40) == 0x00)
-            {
-              // Display scaled control data on LCD
-              set_lcd_addr(0x40);
-              write_int_lcd(motor_left_speed);
-              type_lcd("  ");
-              write_int_lcd(motor_right_speed);
-            }
             
             // If ultrasonic detects object in front of robot, stop
             // forward movement and log timestamp
