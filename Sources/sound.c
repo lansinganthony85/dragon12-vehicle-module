@@ -1,3 +1,4 @@
+
 /*
  *  NAME
  *      sound.c
@@ -10,10 +11,8 @@
  */
 
 #include "sound.h"
-#include <hidef.h>      /* common defines and macros */
-#include <mc9s12dg256.h>     /* derivative information */
-#pragma LINK_INFO DERIVATIVE "mc9s12dg256b"
-#include "main_asm.h" /* interface to the assembly module */
+
+
 
 /* GLOBAL */
 uint16 g_pitch;
@@ -54,8 +53,7 @@ void interrupt 13 noise_maker()
  */ 
 void start_jingle(void)
 {
-    
-    
+     
     uint8 incrementer;                      // to increment through arrays
     
     /* the notes of the song */
@@ -69,6 +67,8 @@ void start_jingle(void)
     {
         EIGTH_NOTE, EIGTH_NOTE, QUARTER_NOTE
     };
+    
+    TIE = CLEAR;                            // Clear any existing interrupts
     
     /* play each note for the predetermined length of time */
     for(incrementer = 0; incrementer < START_JINGLE_SIZE; incrementer++)
@@ -96,7 +96,7 @@ void start_jingle(void)
  */ 
 void sound_effect(void)
 {
-    //asm(bclr TIE, #$FF);                    // Disables interrupts
+    TIE = CLEAR;                            // Clear any existing interrupts
     
     g_pitch = C;
     start_sound();
@@ -135,6 +135,8 @@ void explore_jingle(void)
         DOTTED_QUARTER_NOTE, QUARTER_NOTE, QUARTER_NOTE, QUARTER_NOTE, QUARTER_NOTE, HALF_NOTE
     };
     
+    TIE = CLEAR;                            // Clear any existing interrupts
+    
     /* play each note for the predetermined length of time */
     for(incrementer = 0; incrementer < EXPLORE_JINGLE_SIZE; incrementer++)
     {
@@ -161,7 +163,6 @@ void explore_jingle(void)
  */
 void end_jingle(void)
 {
-    //asm(bclr TIE, #$FF);                    // Disables interrupts
     
     uint8 incrementer;                      // to increment through arrays
     
@@ -177,6 +178,8 @@ void end_jingle(void)
         EIGTH_NOTE, EIGTH_NOTE, QUARTER_NOTE
     };
     
+    TIE = CLEAR;                            // Clear any existing interrupts
+     
     /* play each note for the predetermined length of time */
     for(incrementer = 0; incrementer < END_JINGLE_SIZE; incrementer++)
     {
