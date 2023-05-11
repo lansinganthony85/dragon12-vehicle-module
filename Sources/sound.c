@@ -74,7 +74,7 @@ void start_jingle(void)
     for(incrementer = 0; incrementer < START_JINGLE_SIZE; incrementer++)
     {
         g_pitch = notes[incrementer];       // note to be played when sound is turned on
-        sound_on();
+        start_sound();
         ms_delay(note_lengths[incrementer]);// wait for not to play its intended length   
     } /* for */
     
@@ -99,7 +99,7 @@ void sound_effect(void)
     //asm(bclr TIE, #$FF);                    // Disables interrupts
     
     g_pitch = C;
-    sound_on();
+    start_sound();
     ms_delay(EIGTH_NOTE);                   // wait for note to play intended duration
     stop_sound();
 } /* sound_effect */
@@ -139,7 +139,7 @@ void explore_jingle(void)
     for(incrementer = 0; incrementer < EXPLORE_JINGLE_SIZE; incrementer++)
     {
         g_pitch = notes[incrementer];       // note to be played when sound is turned on
-        sound_on();
+        start_sound();
         ms_delay(note_lengths[incrementer]);// wait for not to play its intended length   
     } /* for */
     
@@ -181,7 +181,7 @@ void end_jingle(void)
     for(incrementer = 0; incrementer < END_JINGLE_SIZE; incrementer++)
     {
         g_pitch = notes[incrementer];       // note to be played when sound is turned on
-        sound_on();
+        start_sound();
         ms_delay(note_lengths[incrementer]);// wait for not to play its intended length   
     } /* for */
     

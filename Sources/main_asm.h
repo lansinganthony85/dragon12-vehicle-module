@@ -110,6 +110,7 @@ void  fill_weights(unsigned char*,unsigned char*,int,unsigned char);
 void fire_rules(unsigned char*,unsigned char*,unsigned char*,int);
 unsigned char calc_output(unsigned char*,unsigned char*,int);
 void stop_sound(void);
+void start_sound(void);
 
 #ifdef __cplusplus
     }

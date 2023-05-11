@@ -41,7 +41,7 @@
             XDEF HILO2_init, HILOtimes2
             XDEF get_HI_time2, get_LO_time2
             XDEF fill_weights, fire_rules, calc_output
-            XDEF stop_sound
+            XDEF start_sound, stop_sound
 
 ; include derivative specific macros
             INCLUDE 'mc9s12dg256.inc'
@@ -9987,12 +9987,24 @@ get_HI_time2:
 get_LO_time2:
             ldd   LO_time2
             rts
+;  start_sound()
+start_sound:
+            bset  OC7M,#$20   ;pulse train out PT5
+            bset  OC7D,#$20   ;PT5 goes high on TC7 match
+            bset  TCTL1,#$08  ;PT5 low on TC5  match
+            bclr  TCTL1,#$04
+            bset  TIE,#$20    ;enable TC5 interrupts
+            cli               ;enable interrupts
+            rts
 
 ; CUSTOM
 ;  stop_sound()
 ; only disable the interrupts that make sound
 stop_sound:
             sei
+            bclr  OC7M,#$20   ;pulse train out PT5
+            bclr  OC7D,#$20   ;PT5 goes high on TC7 match
+            bclr  TCTL1,#$08  ;PT5 low on TC5  match  
             bclr  TIE,#$20    ;disable TC5 interrupts
             cli               ; re-enable all other interrupts
             rts
