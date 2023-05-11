@@ -33,8 +33,8 @@
 #define EXPLORE_SELECT_ADDR 0x07
 #define DATA_SELECT_ADDR 0x48
 #define ENTER_BITMASK 0x04                  // Connected to PM2
-#define BUTTON1_BITMASK 0x02                // Connected to PM1
-#define BUTTON2_BITMASK 0x01                // Connected to PM0
+#define BUTTON1_BITMASK 0x01                // Connected to PM1
+#define BUTTON2_BITMASK 0x02                // Connected to PM0
 
 
 /* PROTOTYPES */
@@ -88,7 +88,7 @@ void main(void) {
   lcd_init();
   clear_lcd();
   seg7_disable();
-  led_disable();
+  led_enable();
   SW_enable();
   //ad0_enable();
   ad1_enable();
@@ -281,6 +281,7 @@ void main(void) {
             if ((motor_left_speed == 0) && (motor_right_speed == 0))
             {
               battery_level = read_battery_level();
+              led_battery_indicator(battery_level);
             }
             
             // Make sound if battery is under 20%

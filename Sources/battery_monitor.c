@@ -5,6 +5,7 @@
 #define ONE_HUNDRED_PERCENT          100
 
 #define ADC_TO_BATTERY_CONV(input)   (((input-ADC_3_P_444V)*ONE_HUNDRED_PERCENT)/(ADC_4_P_822V-ADC_3_P_444V))
+#define BATTERY_TO_LEDS_CONV(input)  (input*7)/100
 
 
 
@@ -26,4 +27,17 @@ char read_battery_level(void)
   battery_level = ADC_TO_BATTERY_CONV(ADC_battery_reading);
   
   return (battery_level);
+}
+
+
+void led_battery_indicator(char battery_level)
+{
+  char num_leds_on = BATTERY_TO_LEDS_CONV(battery_level);
+  
+  leds_off();
+  
+  for (num_leds_on; num_leds_on >= 0; num_leds_on--)
+  {
+    led_on(num_leds_on);
+  }
 }
