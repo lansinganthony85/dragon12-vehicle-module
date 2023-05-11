@@ -19,6 +19,7 @@
 #include "rc_read.h"                /* include code to read RC PWM */
 #include "motor_control.h"
 #include "battery_monitor.h"
+#include "sound.h"
 
 /* DEFINITIONS*/
 #define MOTOR_SPEED_MULTIPLIER             100.0
@@ -35,37 +36,14 @@
 #define BUTTON1_BITMASK 0x02                // Connected to PM1
 #define BUTTON2_BITMASK 0x01                // Connected to PM0
 
-/* PITCHES */
-#define c 2867
-#define d 2554
-#define e 2276
-#define f 2148
-#define g 1914
-#define a 1705
-#define b 1519
-#define C 1434
-#define D 1277
-#define E 1138
-#define F 1074
-#define G 957
-#define A 853
-#define B 760
-#define CC 717
-#define DD 639
-
 
 /* PROTOTYPES */
 float abs_value(float input_val);
-void start_jingle(void);
-void sound_effect(void);
-void explore_jingle(void);
-void end_jingle(void);
 
 /* GLOBALS */
 uint8 g_done = FALSE;
 int motor_left_speed = 0;
 int motor_right_speed = 0;
-uint16 g_pitch;
 uint8 g_log_front_collision = FALSE;
 uint8 g_log_rear_collision = FALSE;
 uint8 g_stop_forward_movement = FALSE;
@@ -81,10 +59,6 @@ void interrupt 9 handler1()
 void interrupt 10 handler2()
 {
     HILOtimes2();
-}
-void interrupt 13 noise_maker()
-{
-    tone(g_pitch);
 }
 
 
@@ -434,82 +408,4 @@ void interrupt 25 detect_switches(void)
     
     /* clear the flag */
     PIFH = clear_bits;   
-} /* end_program */
-
-void start_jingle(void)
-{
-    uint8 array_size = 3;
-    uint8 index;
-    uint16 note[] = 
-    {
-        C, E, F
-    };
-    uint8 length[] = 
-    {
-        250, 250, 500
-    };
-    
-    for(index = 0; index < array_size; index++)
-    {
-        g_pitch = note[index];
-        sound_on();
-        ms_delay(length[index]);   
-    }
-    sound_off();
-    _asm cli;
-}
-
-void sound_effect(void)
-{
-    g_pitch = C;
-    sound_on();
-    ms_delay(250);
-    sound_off();
-    _asm cli;
-}
-
-void explore_jingle(void)
-{
-    uint8 array_size = 6;
-    uint8 index;
-    uint16 note[] = 
-    {
-        C, E, C, F, G, A
-    };
-    uint8 length[] = 
-    {
-        750, 500, 500, 500, 500, 1000
-    };
-    
-    for(index = 0; index < array_size; index++)
-    {
-        g_pitch = note[index];
-        sound_on();
-        ms_delay(length[index]);   
-    }
-    sound_off();
-    _asm cli;   
-}
-
-void end_jingle(void)
-{
-    uint8 array_size = 3;
-    uint8 index;
-    uint16 note[] = 
-    {
-        F, E, C
-    };
-    uint8 length[] = 
-    {
-        250, 250, 500
-    };
-    
-    for(index = 0; index < array_size; index++)
-    {
-        g_pitch = note[index];
-        sound_on();
-        ms_delay(length[index]);   
-    }
-    sound_off();
-    _asm cli;   
-}
+} /* detect_switches */

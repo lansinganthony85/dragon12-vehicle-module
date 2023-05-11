@@ -9896,12 +9896,12 @@ HILO1_init:
             movb  #$04,TSCR2  ;div by 16: 24MHz/16 = 1.5 MHz
             movb  #$80,TSCR1  ;enable timer
             ldd   TCNT
-            std   TC1 				;init cnt in TC1
+            std   TC1         ;init cnt in TC1
             bset  TCTL4,#$0C  ;interrupt on both edges of Ch 1
-						movb  #$02,TFLG1  ;clear any old flag on Ch 1
+            movb  #$02,TFLG1  ;clear any old flag on Ch 1
             bset  TIE,#$02    ;enable TC1 interrupts
             cli               ;enable interrupts
-						rts
+            rts
 						
 ; CUSTOM
 ; calc HI-LO times of pulse train on Ch 2 
@@ -9913,28 +9913,28 @@ HILO2_init:
             movb  #$04,TSCR2  ;div by 16: 24MHz/16 = 1.5 MHz
             movb  #$80,TSCR1  ;enable timer
             ldd   TCNT
-            std   TC2 				;init cnt in TC2
+            std   TC2         ;init cnt in TC2
             bset  TCTL4,#$30  ;interrupt on both edges of Ch 2
-						movb  #$04,TFLG1  ;clear any old flag on Ch 2
+            movb  #$04,TFLG1  ;clear any old flag on Ch 2
             bset  TIE,#$04    ;enable TC2 interrupts
             cli               ;enable interrupts
-						rts
+            rts
 
 ; calc HI-LO times of pulse train on Ch 1 
 ;   and store results in HI_time1 and LO_time1            
 ; void getHILOtimes1(void);
 HILOtimes1:
-						brclr PTT,$02,HL1 ;if PTT1 is hi, rising edge
-						ldd   TC1
-						pshd              ;save TC1
-						subd  TC1old      ;LO_time'
+            brclr PTT,$02,HL1 ;if PTT1 is hi, rising edge
+            ldd   TC1
+            pshd              ;save TC1
+            subd  TC1old      ;LO_time'
             std   LO_time1;   ;store LO_time1
             puld              ;get TC1
             std   TC1old;     ;TC1old = TC1
             bra   HL2
-HL1:        ldd   TC1					;else, falling edge
-						pshd              ;save TC1
-						subd  TC1old      ;HI_time'
+HL1:        ldd   TC1         ;else, falling edge
+            pshd              ;save TC1
+            subd  TC1old      ;HI_time'
             std   HI_time1;   ;save HI_time1
             puld              ;get TC1
             std   TC1old;     ;TC1old = TC1
@@ -9948,17 +9948,17 @@ HL2:        bset  TFLG1, #$02 ;clear int flag
 ; 
 ; void getHILOtimes2(void);
 HILOtimes2:
-						 brclr PTT,$04,HL21 ;if PTT2 is hi, rising edge
-						 ldd   TC2
-					   pshd              ;save TC2
-					 	 subd  TC2old      ;LO_time'
+             brclr PTT,$04,HL21 ;if PTT2 is hi, rising edge
+             ldd   TC2
+             pshd              ;save TC2
+             subd  TC2old      ;LO_time'
              std   LO_time2;   ;store LO_time2
              puld              ;get TC2
              std   TC2old;     ;TC2old = TC2
              bra   HL22
-HL21:        ldd   TC2					;else, falling edge
-					   pshd              ;save TC2
-						 subd  TC2old      ;HI_time'
+HL21:        ldd   TC2         ;else, falling edge
+             pshd              ;save TC2
+             subd  TC2old      ;HI_time'
              std   HI_time2;   ;save HI_time2
              puld              ;get TC2
              std   TC2old;     ;TC2old = TC2
