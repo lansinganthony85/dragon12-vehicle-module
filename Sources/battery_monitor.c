@@ -30,12 +30,21 @@ char read_battery_level(void)
 }
 
 
+// Takes the battery level and displays it on the LEDs as a bar meter
+//
+// INPUTS:
+//         (char) battery_level: battery level between 0 and 100%
+// OUTPUTS:
+//         none
 void led_battery_indicator(char battery_level)
 {
+  // Returns a value between 0 (no battery) and 7 (full battery)
   char num_leds_on = BATTERY_TO_LEDS_CONV(battery_level);
   
+  // Clear previous reading
   leds_off();
   
+  // Turn on the respective number of LEDs
   for (num_leds_on; num_leds_on >= 0; num_leds_on--)
   {
     led_on(num_leds_on);
