@@ -72,8 +72,7 @@ void start_jingle(void)
         ms_delay(note_lengths[incrementer]);// wait for not to play its intended length   
     } /* for */
     
-    sound_off();                            // turn sound off and re-enable interrupts
-    _asm cli
+    stop_sound();                            // turn sound off and re-enable interrupts
 } /* start_jingle */
 
 /*
@@ -94,8 +93,7 @@ void sound_effect(void)
     g_pitch = C;
     sound_on();
     ms_delay(EIGTH_NOTE);               // wait for note to play intended duration
-    sound_off();
-    _asm cli
+    stop_sound();
 } /* sound_effect */
 
 /*
@@ -135,8 +133,7 @@ void explore_jingle(void)
         ms_delay(note_lengths[incrementer]);// wait for not to play its intended length   
     } /* for */
     
-    sound_off();                            // turn off sound and re-enable interrupts
-    _asm cli   
+    stop_sound();                            // turn off sound and re-enable interrupts
 } /* explore_jingle */
 
 /*
@@ -176,5 +173,5 @@ void end_jingle(void)
         ms_delay(note_lengths[incrementer]);// wait for not to play its intended length   
     } /* for */
     
-    sound_off();                            // turn off sound and re-enable interrupts   
+    stop_sound();                            // turn off sound and re-enable interrupts
 } /* end_jingle */

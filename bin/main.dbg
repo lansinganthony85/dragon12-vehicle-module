@@ -41,6 +41,7 @@
             XDEF HILO2_init, HILOtimes2
             XDEF get_HI_time2, get_LO_time2
             XDEF fill_weights, fire_rules, calc_output
+            XDEF stop_sound
 
 ; include derivative specific macros
             INCLUDE 'mc9s12dg256.inc'
@@ -9985,6 +9986,15 @@ get_HI_time2:
 ; int get_LO_time2(void);
 get_LO_time2:
             ldd   LO_time2
+            rts
+
+; CUSTOM
+;  stop_sound()
+; only disable the interrupts that make sound
+stop_sound:
+            sei
+            bclr  TIE,#$20    ;disable TC5 interrupts
+            cli               ; re-enable all other interrupts
             rts
             
 ; Fuzzy Control routines
