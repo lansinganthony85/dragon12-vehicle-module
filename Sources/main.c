@@ -99,8 +99,8 @@ void main(void) {
   motor1_init();
   motor2_init();
   
-  sound_init(); 
-  eeprom_init();
+  noise_init();                             // set up ch5 and ch7 for pulse train through speaker 
+  eeprom_init();                            // prepare FRAM for SPI
   
   _asm cli                                  // enable interrupts
   

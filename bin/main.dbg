@@ -41,7 +41,7 @@
             XDEF HILO2_init, HILOtimes2
             XDEF get_HI_time2, get_LO_time2
             XDEF fill_weights, fire_rules, calc_output
-            XDEF start_sound, stop_sound
+            XDEF noise_init, start_sound, stop_sound
 
 ; include derivative specific macros
             INCLUDE 'mc9s12dg256.inc'
@@ -9888,7 +9888,50 @@ tone:
             std   TC5         ;TC6new =TC7new + pitch
             movb  #$A0,TFLG1  ;clear both C7F and C5F
             rts
-            
+
+;  CUSTOM
+;   noise_init
+;   We prepare the TC5 and TC7 channels for sending a pulse train
+;   through the speaker to make sound; however, we will not be
+;   turning on the pulse train until sound is needed as this would
+;   cause the speaker to pulse even when sound is off as we use the
+;   timer for the full operation of the vehicle
+noise_init:
+            movb  #$A0,TIOS   ;select output compares 5 & 7
+            movb  #$04,TSCR2  ;div by 16: 24MHz/16 = 1.5 MHz
+            movb  #$80,TSCR1  ;enable timer
+            ldd   TCNT        ;set init value of TC5 and TC7
+            std   TC5 
+            std   TC7		  ;init cnt in TC5 & TC7
+            bset  OC7M,#$20   ;pulse train out PT5
+            bset  OC7D,#$20   ;PT5 goes high on TC7 match
+            bclr  TCTL1,#$08  ;disconnect timer from output pins
+            bclr  TCTL1,#$04
+            rts
+
+; CUSTOM
+;  start_sound()
+; Since our design uses the timer for the full operation of the vehicle
+; We only set up the TC5 and TC7 channels for sound when we need them.
+; Otherwise, the speaker will be pulsing even when we turn sound off.
+start_sound:
+            bset  TCTL1,#$08  ;PT5 low on TC5  match
+            bset  TIE,#$20    ;enable TC5 interrupts
+            cli               ;enable interrupts
+            rts
+
+; CUSTOM
+;  stop_sound()
+; only disable the interrupts that make sound
+; turn off the pulse train so that the speaker will not
+; continue to pulse as the timer is being used elsewhere
+stop_sound:
+            sei
+            bclr  TCTL1,#$08  ;disconnect timer from from output pins
+            bclr  TIE,#$20    ;disable TC5 interrupts
+            cli               ; re-enable all other interrupts
+            rts
+                        
 ; calc HI-LO times of pulse train on Ch 1 
 ;   and store results in HI_time1 and LO_time1            
 ; void HILO1_init(void);
@@ -9986,27 +10029,6 @@ get_HI_time2:
 ; int get_LO_time2(void);
 get_LO_time2:
             ldd   LO_time2
-            rts
-;  start_sound()
-start_sound:
-            bset  OC7M,#$20   ;pulse train out PT5
-            bset  OC7D,#$20   ;PT5 goes high on TC7 match
-            bset  TCTL1,#$08  ;PT5 low on TC5  match
-            bclr  TCTL1,#$04
-            bset  TIE,#$20    ;enable TC5 interrupts
-            cli               ;enable interrupts
-            rts
-
-; CUSTOM
-;  stop_sound()
-; only disable the interrupts that make sound
-stop_sound:
-            sei
-            bclr  OC7M,#$20   ;pulse train out PT5
-            bclr  OC7D,#$20   ;PT5 goes high on TC7 match
-            bclr  TCTL1,#$08  ;PT5 low on TC5  match  
-            bclr  TIE,#$20    ;disable TC5 interrupts
-            cli               ; re-enable all other interrupts
             rts
             
 ; Fuzzy Control routines

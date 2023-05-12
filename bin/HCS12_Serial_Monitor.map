@@ -1,5 +1,5 @@
 *** EVALUATION ***
-PROGRAM "C:\Users\Nawor\Desktop\CSC-202 Final GitHub\dragon12-vehicle-module\bin\HCS12_Serial_Monitor.abs"
+PROGRAM "C:\Users\anust\Documents\Programming\202\Final_Project\bin\HCS12_Serial_Monitor.abs"
 
 *********************************************************************************************
 TARGET SECTION
@@ -40,7 +40,7 @@ _startupData is allocated at 0xC03B and uses 6 Bytes
 extern struct _tagStartup {
   unsigned nofZeroOut     1
   _Range   pZeroOut       0x1100     69
-  _Copy    *toCopyDownBeg 0xD574
+  _Copy    *toCopyDownBeg 0xD587
 } _startupData;
 
 *********************************************************************************************
@@ -51,7 +51,7 @@ Section Name                    Size  Type     From       To       Segment
 .startData                        10     R     0xC03B     0xC044   ROM_C000
 .rodata1                         188     R     0xC045     0xC100   ROM_C000
 .text                           2491     R     0xC101     0xCABB   ROM_C000
-.copy                             21     R     0xD574     0xD588   ROM_C000
+.copy                             21     R     0xD587     0xD59B   ROM_C000
 .stack                           256   R/W     0x1000     0x10FF   RAM
 .data                             18   R/W     0x1100     0x1111   RAM
 .abs_section_8                     1   N/I        0x8        0x8   .absSeg0
@@ -401,14 +401,14 @@ Section Name                    Size  Type     From       To       Segment
 .abs_section_fff0                  2     R     0xFFF0     0xFFF1   .absSeg344
 .abs_section_ffe4                  2     R     0xFFE4     0xFFE5   .absSeg345
 .bss                              12   R/W     0x1112     0x111D   RAM
-MyCode                          1968     R     0xCABC     0xD26B   ROM_C000
+MyCode                          1987     R     0xCABC     0xD27E   ROM_C000
 MY_EXTENDED_RAM                   34   R/W     0x111E     0x113F   RAM
-RUNTIME                          776     R     0xD26C     0xD573   ROM_C000
+RUNTIME                          776     R     0xD27F     0xD586   ROM_C000
 .common                            5   R/W     0x1140     0x1144   RAM
 .vectSeg346_vect                   2     R     0xFFFE     0xFFFF   .vectSeg346
 
 Summary of section sizes per section type:
-READ_ONLY (R):        1595 (dec:     5525)
+READ_ONLY (R):        15A8 (dec:     5544)
 READ_WRITE (R/W):      145 (dec:      325)
 NO_INIT (N/I):         190 (dec:      400)
 
@@ -946,25 +946,26 @@ MODULE:                 -- main.asm.o --
      sound_on                                  D166       B      11       0   MyCode      
      sound_off                                 D171       9       9       0   MyCode      
      tone                                      D17A      10      16       1   MyCode      
-     HILO1_init                                D18A      1F      31       1   MyCode      
-     HILO2_init                                D1A9      1F      31       1   MyCode      
-     HILOtimes1                                D1C8      14      20       1   MyCode      
-     HL1                                       D1DC       D      13       0   MyCode      
-     HL2                                       D1E9       4       4       0   MyCode      
-     HILOtimes2                                D1ED      14      20       1   MyCode      
-     HL21                                      D201       D      13       0   MyCode      
-     HL22                                      D20E       4       4       0   MyCode      
-     get_HI_time1                              D212       4       4       1   MyCode      
-     get_LO_time1                              D216       4       4       0   MyCode      
-     get_HI_time2                              D21A       4       4       1   MyCode      
-     get_LO_time2                              D21E       4       4       0   MyCode      
-     start_sound                               D222      12      18       4   MyCode      
-     stop_sound                                D234      11      17       4   MyCode      
-     fill_weights                              D245       8       8       0   MyCode      
-     fw1                                       D24D       5       5       0   MyCode      
-     fire_rules                                D252       2       2       0   MyCode      
-     fr0                                       D254       E      14       0   MyCode      
-     calc_output                               D262       A      10       0   MyCode      
+     noise_init                                D18A      22      34       0   MyCode      
+     start_sound                               D1AC       9       9       4   MyCode      
+     stop_sound                                D1B5       B      11       4   MyCode      
+     HILO1_init                                D1C0      1F      31       1   MyCode      
+     HILO2_init                                D1DF      1F      31       1   MyCode      
+     HILOtimes1                                D1FE      14      20       1   MyCode      
+     HL1                                       D212       D      13       0   MyCode      
+     HL2                                       D21F       4       4       0   MyCode      
+     HILOtimes2                                D223      14      20       1   MyCode      
+     HL21                                      D237       D      13       0   MyCode      
+     HL22                                      D244       4       4       0   MyCode      
+     get_HI_time1                              D248       4       4       1   MyCode      
+     get_LO_time1                              D24C       4       4       0   MyCode      
+     get_HI_time2                              D250       4       4       1   MyCode      
+     get_LO_time2                              D254       4       4       0   MyCode      
+     fill_weights                              D258       8       8       0   MyCode      
+     fw1                                       D260       5       5       0   MyCode      
+     fire_rules                                D265       2       2       0   MyCode      
+     fr0                                       D267       E      14       0   MyCode      
+     calc_output                               D275       A      10       0   MyCode      
 - VARIABLES:
      temp                                      111E       1       1       2   MY_EXTENDED_RAM
      pmimg                                     111F       1       1       0   MY_EXTENDED_RAM
@@ -1015,47 +1016,47 @@ MODULE:                 -- Start12.c.o --
      __SEG_END_SSTACK                          1100       0       0       1               
 MODULE:                 -- FADD.C.o (ansis.lib) --
 - PROCEDURES:
-     F_ADDKL                                   D26C      67     103       1   RUNTIME     
-     _FADD                                     D2D3      15      21       4   RUNTIME     
+     F_ADDKL                                   D27F      67     103       1   RUNTIME     
+     _FADD                                     D2E6      15      21       4   RUNTIME     
 - VARIABLES:
 MODULE:                 -- FCONV.C.o (ansis.lib) --
 - PROCEDURES:
-     F_TOLONGK                                 D2E8      33      51       1   RUNTIME     
-     F_FRLONGK                                 D31B      1F      31       2   RUNTIME     
-     _FSFLOAT                                  D33A      12      18       3   RUNTIME     
-     _FUFLOAT                                  D34C      12      18       1   RUNTIME     
-     _FSTRUNC                                  D35E      11      17       4   RUNTIME     
-     _FUTRUNC                                  D36F       3       3       1   RUNTIME     
+     F_TOLONGK                                 D2FB      33      51       1   RUNTIME     
+     F_FRLONGK                                 D32E      1F      31       2   RUNTIME     
+     _FSFLOAT                                  D34D      12      18       3   RUNTIME     
+     _FUFLOAT                                  D35F      12      18       1   RUNTIME     
+     _FSTRUNC                                  D371      11      17       4   RUNTIME     
+     _FUTRUNC                                  D382       3       3       1   RUNTIME     
 - VARIABLES:
 MODULE:                 -- FMUL.C.o (ansis.lib) --
 - PROCEDURES:
-     F_DIVKL                                   D372      8E     142       1   RUNTIME     
-     F_MULKL                                   D400      58      88       1   RUNTIME     
-     _FMUL                                     D458      14      20       5   RUNTIME     
-     _FDIV                                     D46C      1E      30       4   RUNTIME     
+     F_DIVKL                                   D385      8E     142       1   RUNTIME     
+     F_MULKL                                   D413      58      88       1   RUNTIME     
+     _FMUL                                     D46B      14      20       5   RUNTIME     
+     _FDIV                                     D47F      1E      30       4   RUNTIME     
 - VARIABLES:
 MODULE:                 -- FREGS.C.o (ansis.lib) --
 - PROCEDURES:
-     F_PULK                                    D48A      15      21       4   RUNTIME     
-     F_PULL                                    D49F      15      21       3   RUNTIME     
-     F_PSHK                                    D4B4      13      19       5   RUNTIME     
-     F_XGKL                                    D4C7      21      33       2   RUNTIME     
-     F_CLRK                                    D4E8       B      11       2   RUNTIME     
-     F_MAXK                                    D4F3       9       9       2   RUNTIME     
-     F_NORMK                                   D4FC      3E      62       3   RUNTIME     
+     F_PULK                                    D49D      15      21       4   RUNTIME     
+     F_PULL                                    D4B2      15      21       3   RUNTIME     
+     F_PSHK                                    D4C7      13      19       5   RUNTIME     
+     F_XGKL                                    D4DA      21      33       2   RUNTIME     
+     F_CLRK                                    D4FB       B      11       2   RUNTIME     
+     F_MAXK                                    D506       9       9       2   RUNTIME     
+     F_NORMK                                   D50F      3E      62       3   RUNTIME     
 - VARIABLES:
 MODULE:                 -- rtshc12.c.o (ansis.lib) --
 - PROCEDURES:
-     _NEG_P                                    D53A       F      15       1   RUNTIME     
-     _ILSEXT                                   D549       7       7       2   RUNTIME     
-     _COPY                                     D550       8       8       3   RUNTIME     
+     _NEG_P                                    D54D       F      15       1   RUNTIME     
+     _ILSEXT                                   D55C       7       7       2   RUNTIME     
+     _COPY                                     D563       8       8       3   RUNTIME     
 - VARIABLES:
 MODULE:                 -- VREGS.C.o (ansis.lib) --
 - PROCEDURES:
-     L_NEGK                                    D558       7       7       2   RUNTIME     
-     L_PSHK                                    D55F       8       8       1   RUNTIME     
-     UL_PULK                                   D567       3       3       1   RUNTIME     
-     SL_PULK                                   D56A       A      10       1   RUNTIME     
+     L_NEGK                                    D56B       7       7       2   RUNTIME     
+     L_PSHK                                    D572       8       8       1   RUNTIME     
+     UL_PULK                                   D57A       3       3       1   RUNTIME     
+     SL_PULK                                   D57D       A      10       1   RUNTIME     
 - VARIABLES:
 MODULE:                 -- eeprom.c.o --
 - PROCEDURES:
@@ -1149,7 +1150,7 @@ MODULE STATISTIC
   Name                                      Data   Code  Const
 ---------------------------------------------------------------------------------------------
   mc9s12dg256.c.o                            400      0      0
-  main.asm.o                                  34   1968      0
+  main.asm.o                                  34   1987      0
   main.c.o                                     7    858    114
   Start12.c.o                                  0     59      0
   FADD.C.o (ansis.lib)                         0    124      0
@@ -1898,9 +1899,10 @@ SECTION: "MyCode"
   SPI0_init SPI1_init SPI2_init send_SPI0 snd0 snd01 send_SPI1 snd1 snd11 
   send_SPI2 snd2 snd21 SS0_HI SS1_HI SS2_HI SS0_LO SS1_LO SS2_LO RTI_init 
   clear_RTI_flag RTI_disable SCI0_int_init read_SCI0_Rx ptrain6_init ptrain6 
-  sound_init sound_on sound_off tone HILO1_init HILO2_init HILOtimes1 HL1 HL2 
-  HILOtimes2 HL21 HL22 get_HI_time1 get_LO_time1 get_HI_time2 get_LO_time2 
-  start_sound stop_sound fill_weights fw1 fire_rules fr0 calc_output 
+  sound_init sound_on sound_off tone noise_init start_sound stop_sound 
+  HILO1_init HILO2_init HILOtimes1 HL1 HL2 HILOtimes2 HL21 HL22 get_HI_time1 
+  get_LO_time1 get_HI_time2 get_LO_time2 fill_weights fw1 fire_rules fr0 
+  calc_output 
 SECTION: "MY_EXTENDED_RAM"
   temp pmimg temp1 bas dnum buff pad TC1old LO_time1 HI_time1 TC2old LO_time2 
   HI_time2 
@@ -2536,51 +2538,52 @@ OBJECT LIST SORTED BY ADDRESS
      sound_on                                  D166       B      11       0   MyCode      
      sound_off                                 D171       9       9       0   MyCode      
      tone                                      D17A      10      16       1   MyCode      
-     HILO1_init                                D18A      1F      31       1   MyCode      
-     HILO2_init                                D1A9      1F      31       1   MyCode      
-     HILOtimes1                                D1C8      14      20       1   MyCode      
-     HL1                                       D1DC       D      13       0   MyCode      
-     HL2                                       D1E9       4       4       0   MyCode      
-     HILOtimes2                                D1ED      14      20       1   MyCode      
-     HL21                                      D201       D      13       0   MyCode      
-     HL22                                      D20E       4       4       0   MyCode      
-     get_HI_time1                              D212       4       4       1   MyCode      
-     get_LO_time1                              D216       4       4       0   MyCode      
-     get_HI_time2                              D21A       4       4       1   MyCode      
-     get_LO_time2                              D21E       4       4       0   MyCode      
-     start_sound                               D222      12      18       4   MyCode      
-     stop_sound                                D234      11      17       4   MyCode      
-     fill_weights                              D245       8       8       0   MyCode      
-     fw1                                       D24D       5       5       0   MyCode      
-     fire_rules                                D252       2       2       0   MyCode      
-     fr0                                       D254       E      14       0   MyCode      
-     calc_output                               D262       A      10       0   MyCode      
-     F_ADDKL                                   D26C      67     103       1   RUNTIME     
-     _FADD                                     D2D3      15      21       4   RUNTIME     
-     F_TOLONGK                                 D2E8      33      51       1   RUNTIME     
-     F_FRLONGK                                 D31B      1F      31       2   RUNTIME     
-     _FSFLOAT                                  D33A      12      18       3   RUNTIME     
-     _FUFLOAT                                  D34C      12      18       1   RUNTIME     
-     _FSTRUNC                                  D35E      11      17       4   RUNTIME     
-     _FUTRUNC                                  D36F       3       3       1   RUNTIME     
-     F_DIVKL                                   D372      8E     142       1   RUNTIME     
-     F_MULKL                                   D400      58      88       1   RUNTIME     
-     _FMUL                                     D458      14      20       5   RUNTIME     
-     _FDIV                                     D46C      1E      30       4   RUNTIME     
-     F_PULK                                    D48A      15      21       4   RUNTIME     
-     F_PULL                                    D49F      15      21       3   RUNTIME     
-     F_PSHK                                    D4B4      13      19       5   RUNTIME     
-     F_XGKL                                    D4C7      21      33       2   RUNTIME     
-     F_CLRK                                    D4E8       B      11       2   RUNTIME     
-     F_MAXK                                    D4F3       9       9       2   RUNTIME     
-     F_NORMK                                   D4FC      3E      62       3   RUNTIME     
-     _NEG_P                                    D53A       F      15       1   RUNTIME     
-     _ILSEXT                                   D549       7       7       2   RUNTIME     
-     _COPY                                     D550       8       8       3   RUNTIME     
-     L_NEGK                                    D558       7       7       2   RUNTIME     
-     L_PSHK                                    D55F       8       8       1   RUNTIME     
-     UL_PULK                                   D567       3       3       1   RUNTIME     
-     SL_PULK                                   D56A       A      10       1   RUNTIME     
+     noise_init                                D18A      22      34       0   MyCode      
+     start_sound                               D1AC       9       9       4   MyCode      
+     stop_sound                                D1B5       B      11       4   MyCode      
+     HILO1_init                                D1C0      1F      31       1   MyCode      
+     HILO2_init                                D1DF      1F      31       1   MyCode      
+     HILOtimes1                                D1FE      14      20       1   MyCode      
+     HL1                                       D212       D      13       0   MyCode      
+     HL2                                       D21F       4       4       0   MyCode      
+     HILOtimes2                                D223      14      20       1   MyCode      
+     HL21                                      D237       D      13       0   MyCode      
+     HL22                                      D244       4       4       0   MyCode      
+     get_HI_time1                              D248       4       4       1   MyCode      
+     get_LO_time1                              D24C       4       4       0   MyCode      
+     get_HI_time2                              D250       4       4       1   MyCode      
+     get_LO_time2                              D254       4       4       0   MyCode      
+     fill_weights                              D258       8       8       0   MyCode      
+     fw1                                       D260       5       5       0   MyCode      
+     fire_rules                                D265       2       2       0   MyCode      
+     fr0                                       D267       E      14       0   MyCode      
+     calc_output                               D275       A      10       0   MyCode      
+     F_ADDKL                                   D27F      67     103       1   RUNTIME     
+     _FADD                                     D2E6      15      21       4   RUNTIME     
+     F_TOLONGK                                 D2FB      33      51       1   RUNTIME     
+     F_FRLONGK                                 D32E      1F      31       2   RUNTIME     
+     _FSFLOAT                                  D34D      12      18       3   RUNTIME     
+     _FUFLOAT                                  D35F      12      18       1   RUNTIME     
+     _FSTRUNC                                  D371      11      17       4   RUNTIME     
+     _FUTRUNC                                  D382       3       3       1   RUNTIME     
+     F_DIVKL                                   D385      8E     142       1   RUNTIME     
+     F_MULKL                                   D413      58      88       1   RUNTIME     
+     _FMUL                                     D46B      14      20       5   RUNTIME     
+     _FDIV                                     D47F      1E      30       4   RUNTIME     
+     F_PULK                                    D49D      15      21       4   RUNTIME     
+     F_PULL                                    D4B2      15      21       3   RUNTIME     
+     F_PSHK                                    D4C7      13      19       5   RUNTIME     
+     F_XGKL                                    D4DA      21      33       2   RUNTIME     
+     F_CLRK                                    D4FB       B      11       2   RUNTIME     
+     F_MAXK                                    D506       9       9       2   RUNTIME     
+     F_NORMK                                   D50F      3E      62       3   RUNTIME     
+     _NEG_P                                    D54D       F      15       1   RUNTIME     
+     _ILSEXT                                   D55C       7       7       2   RUNTIME     
+     _COPY                                     D563       8       8       3   RUNTIME     
+     L_NEGK                                    D56B       7       7       2   RUNTIME     
+     L_PSHK                                    D572       8       8       1   RUNTIME     
+     UL_PULK                                   D57A       3       3       1   RUNTIME     
+     SL_PULK                                   D57D       A      10       1   RUNTIME     
      _Vector_25                                FFCC       2       2       0   .abs_section_ffcc
      _Vector_13                                FFE4       2       2       0   .abs_section_ffe4
      _Vector_10                                FFEA       2       2       0   .abs_section_ffea
@@ -2608,25 +2611,25 @@ rtshc12.c.o (ansis.lib):
 *********************************************************************************************
 COPYDOWN SECTION
 ---------------------------------------------------------------------------------------------
-------- ROM-ADDRESS: 0xD574 ---- SIZE       4 ---
+------- ROM-ADDRESS: 0xD587 ---- SIZE       4 ---
 Filling bytes inserted
  000F1101
-------- ROM-ADDRESS: 0xD578 ---- RAM-ADDRESS: 0x1101 ---- SIZE       1 ---
+------- ROM-ADDRESS: 0xD58B ---- RAM-ADDRESS: 0x1101 ---- SIZE       1 ---
 Name of initialized Object : g_read_addr:1
  02
-------- ROM-ADDRESS: 0xD579 ---- SIZE       1 ---
+------- ROM-ADDRESS: 0xD58C ---- SIZE       1 ---
 Filling bytes inserted
  00
-------- ROM-ADDRESS: 0xD57A ---- RAM-ADDRESS: 0x1103 ---- SIZE       1 ---
+------- ROM-ADDRESS: 0xD58D ---- RAM-ADDRESS: 0x1103 ---- SIZE       1 ---
 Name of initialized Object : g_write_addr:1
  02
-------- ROM-ADDRESS: 0xD57B ---- RAM-ADDRESS: 0x1104 ---- SIZE      10 ---
+------- ROM-ADDRESS: 0xD58E ---- RAM-ADDRESS: 0x1104 ---- SIZE      10 ---
 Name of initialized Object : g_digits_array
  3031323334 3536373839
-------- ROM-ADDRESS: 0xD585 ---- RAM-ADDRESS: 0x110E ---- SIZE       2 ---
+------- ROM-ADDRESS: 0xD598 ---- RAM-ADDRESS: 0x110E ---- SIZE       2 ---
 Name of initialized Object : motor_scalar.1
  3F80
-------- ROM-ADDRESS: 0xD587 ---- SIZE       2 ---
+------- ROM-ADDRESS: 0xD59A ---- SIZE       2 ---
 Filling bytes inserted
  0000
 
@@ -3207,6 +3210,6 @@ STATISTIC SECTION
 
 ExeFile:
 --------
-Number of blocks to be downloaded: 10
-Total size of all blocks to be downloaded: 5525
+Number of blocks to be downloaded: 11
+Total size of all blocks to be downloaded: 5544
 
