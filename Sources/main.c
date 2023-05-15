@@ -20,21 +20,10 @@
 #include "motor_control.h"
 #include "battery_monitor.h"
 #include "sound.h"
+#include "interface.h"                  // include functions and definitions for menu interface
 
 /* DEFINITIONS*/
 #define MOTOR_SPEED_MULTIPLIER             100.0
-
-
-
-#define WELCOME_LABEL "WELCOME"
-#define EXPLORE_LABEL "EXPLORE"
-#define DATA_LABEL "GET DATA"
-#define SELECTOR '*'
-#define EXPLORE_SELECT_ADDR 0x07
-#define DATA_SELECT_ADDR 0x48
-#define ENTER_BITMASK 0x04                  // Connected to PM2
-#define BUTTON1_BITMASK 0x01                // Connected to PM1
-#define BUTTON2_BITMASK 0x02                // Connected to PM0
 
 
 /* PROTOTYPES */
@@ -70,8 +59,8 @@ void main(void) {
   uint16 data_size;
   uint8 index;
   uint8 true_false = FALSE;
-  uint8 is_explore_mode = TRUE;
-  uint8 data_freq = 10;                     //default value
+  uint8 is_explore_mode;
+  uint8 data_freq;
   uint8 front_collision_logged = FALSE;
   uint8 rear_collision_logged = FALSE;
   
@@ -123,63 +112,20 @@ void main(void) {
   DDRA = 0x00;
   
   // ---- CODE FOR SETUP MENU OPTIONS ----
-  while((PTM & ENTER_BITMASK) == ENTER_BITMASK)
-  {
-        if((PTM & BUTTON1_BITMASK) == 0)
-        {
-            sound_effect();
-            is_explore_mode = TRUE;
-            set_lcd_addr(EXPLORE_SELECT_ADDR);
-            data8(SELECTOR);
-            set_lcd_addr(DATA_SELECT_ADDR);
-            data8(' ');   
-        } /* if */
-        if((PTM & BUTTON2_BITMASK) == 0)
-        {    
-            sound_effect();
-            is_explore_mode = FALSE;
-            set_lcd_addr(DATA_SELECT_ADDR);
-            data8(SELECTOR);
-            set_lcd_addr(EXPLORE_SELECT_ADDR);
-            data8(' ');   
-        } /* if */
-  } /* while */
-  sound_effect();
+  is_explore_mode = get_mode();
   ms_delay(50);
   clear_lcd();
   
   if(is_explore_mode)
   {        
         // ---- CODE FOR DATA FREQUENCY MENU ----
-        
-        set_lcd_addr(LINE_1);
-        type_lcd("DATA FREQUENCY: ");
-        set_lcd_addr(LINE_2);
-        write_int_lcd(data_freq);
-        while((PTM & ENTER_BITMASK) == ENTER_BITMASK)
-        {
-            if((data_freq < 60) && (PTM & BUTTON1_BITMASK) == 0)
-            {
-                sound_effect();
-                data_freq += 5;
-                set_lcd_addr(LINE_2);
-                write_int_lcd(data_freq);   
-            } /* if */
-            if((data_freq > 10) && (PTM & BUTTON2_BITMASK) == 0)
-            {
-                sound_effect();
-                data_freq -= 5;
-                set_lcd_addr(LINE_2);
-                write_int_lcd(data_freq);  
-            } /* if */
-            
-            ms_delay(50);
-         } /* while */
+        data_freq = get_frequency();
+        ms_delay(50);
+        clear_lcd();
         
         explore_jingle();
-        clear_lcd();
         set_lcd_addr(LINE_1);
-        type_lcd("EXPLORING...");
+        type_lcd(EXPLORING_LABEL);
         
         clock_init();
         environment_sensor_init();
@@ -298,14 +244,14 @@ void main(void) {
   else
   {        
         set_lcd_addr(LINE_1);
-        type_lcd("PRESS ENTER FOR");
+        type_lcd(DATA_READY);
         set_lcd_addr(LINE_2);
-        type_lcd("DATA");
-        while((PORTA & ENTER_BITMASK) == ENTER_BITMASK);
+        type_lcd(PRESS_ENTER);
+        wait_for_enter_press();
         sound_effect();
         clear_lcd();
         set_lcd_addr(LINE_1);
-        type_lcd("PRINTING DATA...");
+        type_lcd(PRINTING_LABEL);
         
         SCI1_init(9600);
         data_size = read_data_size();
@@ -319,14 +265,14 @@ void main(void) {
         
         clear_lcd();
         set_lcd_addr(LINE_1);
-        type_lcd("DONE.");
+        type_lcd(DONE_LABEL);
         while(!g_done);
         
   } /* else */
   
   clear_lcd();
   set_lcd_addr(LINE_1);
-  type_lcd("Good Bye");
+  type_lcd(GOODBYE_MESS);
   end_jingle();
 
  
