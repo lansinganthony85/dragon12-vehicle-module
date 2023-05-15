@@ -70,11 +70,13 @@ void start_jingle(void)
     
     TIE = CLEAR;                            // Clear any existing interrupts
     
+    start_sound();
+    
     /* play each note for the predetermined length of time */
     for(incrementer = 0; incrementer < START_JINGLE_SIZE; incrementer++)
     {
         g_pitch = notes[incrementer];       // note to be played when sound is turned on
-        start_sound();
+       
         ms_delay(note_lengths[incrementer]);// wait for not to play its intended length   
     } /* for */
     
@@ -137,11 +139,13 @@ void explore_jingle(void)
     
     TIE = CLEAR;                            // Clear any existing interrupts
     
+    start_sound();
+    
     /* play each note for the predetermined length of time */
     for(incrementer = 0; incrementer < EXPLORE_JINGLE_SIZE; incrementer++)
     {
         g_pitch = notes[incrementer];       // note to be played when sound is turned on
-        start_sound();
+       
         ms_delay(note_lengths[incrementer]);// wait for not to play its intended length   
     } /* for */
     
@@ -179,12 +183,14 @@ void end_jingle(void)
     };
     
     TIE = CLEAR;                            // Clear any existing interrupts
+    
+    start_sound();
      
     /* play each note for the predetermined length of time */
     for(incrementer = 0; incrementer < END_JINGLE_SIZE; incrementer++)
     {
         g_pitch = notes[incrementer];       // note to be played when sound is turned on
-        start_sound();
+        
         ms_delay(note_lengths[incrementer]);// wait for not to play its intended length   
     } /* for */
     

@@ -1269,7 +1269,7 @@ start_sound:
 ; continue to pulse as the timer is being used elsewhere
 stop_sound:
             sei
-            bclr  TCTL1,#$08  ;disconnect timer from from output pins
+            bclr  TCTL1,#$08  ;disconnect timer from output pins
             bclr  TIE,#$20    ;disable TC5 interrupts
             cli               ; re-enable all other interrupts
             rts

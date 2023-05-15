@@ -307,7 +307,7 @@ void main(void) {
         set_lcd_addr(LINE_1);
         type_lcd("PRINTING DATA...");
         
-        output_init(9600);
+        SCI1_init(9600);
         data_size = read_data_size();
         write_labels();        
         
