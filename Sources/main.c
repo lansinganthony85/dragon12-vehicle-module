@@ -79,7 +79,6 @@ void main(void) {
   seg7_disable();
   led_enable();
   SW_enable();
-  //ad0_enable();
   ad1_enable();
   
   HILO2_init();
@@ -128,7 +127,7 @@ void main(void) {
         type_lcd(EXPLORING_LABEL);
         
         clock_init();
-        environment_sensor_init();
+        ad0_enable();
         
 
         // ---- CODE FOR WHEN ROBOT IS RUNNING ----        
@@ -231,8 +230,6 @@ void main(void) {
             // Set motor speed
             set_motor_speed(1, motor_left_speed);
             set_motor_speed(2, motor_right_speed);
-
-            
 
             
         } /* while */

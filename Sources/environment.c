@@ -12,25 +12,6 @@
 
 /*
  *  NAME
- *      environment_sensor_init
- *
- *  DESCRIPTION
- *      This function initializes ATD0 for 10-bit resolution.
- *
- *  PARAMETERS
- *      NONE
- *
- *  RETURN
- *      NONE
- */
-void environment_sensor_init(void)
-{
-    ad0_enable();                             // enable ATD0 for 10-bit
-       
-} /* environment_sensor_init */
-
-/*
- *  NAME
  *      get_light_level
  *
  *  DESCRIPTION
