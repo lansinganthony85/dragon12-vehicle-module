@@ -107,7 +107,7 @@ void print_int (uint16 int_to_print)
 {
     sint8 index;                                    // index of the string
     uint8 current_digit;
-    uint8 length = get_num_length(int_to_print);    // get the length of the integer
+    sint8 length = get_num_length(int_to_print);    // get the length of the integer
     
     char num_string[NUM_MAX_LENGTH];
     num_string[length] = NULL_CHAR;                 // the final char should be the Null char
@@ -140,9 +140,9 @@ void print_int (uint16 int_to_print)
  */
 uint8 get_num_length(uint16 num)
 {
-    if (num >= FOUR_DIGIT_NUM) return FOUR;
-    if (num >= THREE_DIGIT_NUM) return THREE;
-    if (num >= TWO_DIGIT_NUM) return TWO;
+    if (num >= FOUR_DIGIT_NUM) return 4;
+    if (num >= THREE_DIGIT_NUM) return 3;
+    if (num >= TWO_DIGIT_NUM) return 2;
     return 1;
 } /* get_num_length */
 

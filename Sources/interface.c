@@ -114,7 +114,7 @@ uint8 get_frequency(void)
         } /* if */
             
     } /* while */   
-    
+    sound_effect();
     return data_freq;
 } /* get_frequency */
 
@@ -134,5 +134,6 @@ uint8 get_frequency(void)
  */
 void wait_for_enter_press(void)
 {
-    while((PORTA & ENTER_BITMASK) == ENTER_BITMASK);   
+    while((PTM & ENTER_BITMASK) == ENTER_BITMASK);
+    sound_effect();   
 } /* wait_for_enter_press */

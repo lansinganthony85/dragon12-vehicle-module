@@ -53,6 +53,7 @@ void interrupt 10 handler2()
 void main(void) {
   /* VARIABLES */
   Clock time_of_data;
+  uint8 old_time_of_data = 99;
   g_collected_data data_log;
   uint16 light;
   uint16 temperature;
@@ -127,8 +128,7 @@ void main(void) {
         type_lcd(EXPLORING_LABEL);
         
         clock_init();
-        ad0_enable();
-        
+        ad0_enable();        
 
         // ---- CODE FOR WHEN ROBOT IS RUNNING ----        
         while(!g_done)
@@ -138,12 +138,15 @@ void main(void) {
             if(true_false)
             {
                 time_of_data = get_time();
-                light = get_light_level();
-                temperature = get_temp();
-                data_log = make_data_log(time_of_data, temperature, light, FALSE, FALSE);
-                write_data(data_log);
-
-              
+                if(!(time_of_data.second == old_time_of_data))
+                {
+                    light = get_light_level();
+                    temperature = get_temp();
+                    data_log = make_data_log(time_of_data, temperature, light, FALSE, FALSE);
+                    write_data(data_log);
+                    old_time_of_data = time_of_data.second;    
+                }
+                  
             } /* if */
             
             
@@ -175,6 +178,7 @@ void main(void) {
                     data_log = make_data_log(time_of_data, 0, 0, TRUE, FALSE);
                     write_data(data_log);
                     front_collision_logged = TRUE;
+                    sound_effect();
                 }
             }
             else
@@ -197,6 +201,8 @@ void main(void) {
                     data_log = make_data_log(time_of_data, 0, 0, FALSE, TRUE);
                     write_data(data_log);
                     rear_collision_logged = TRUE;
+                    sound_effect();
+                    
                 }
             }
             else
