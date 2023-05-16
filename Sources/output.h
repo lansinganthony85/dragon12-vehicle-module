@@ -42,6 +42,7 @@
 #define FOUR_DIGIT_NUM      1000
 #define THREE_DIGIT_NUM     100
 #define TWO_DIGIT_NUM       10
+#define NUM_MAX_LENGTH      5
 
 /* PROTOTYPES */
 void write_to_putty(g_collected_data);

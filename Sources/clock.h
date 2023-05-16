@@ -12,6 +12,7 @@
 #define TIME_COUNT_LIMIT    60          // when seconds and minutes to roll over to zero
 #define ONE_SECOND          100         // the number of RTIs before 1 second has passed
 
+/* use a struct to handle clock-related data as an object */
 typedef struct 
 {
     uint8 hour;

@@ -109,7 +109,7 @@ void print_int (uint16 int_to_print)
     uint8 current_digit;
     uint8 length = get_num_length(int_to_print);    // get the length of the integer
     
-    char num_string[5];
+    char num_string[NUM_MAX_LENGTH];
     num_string[length] = NULL_CHAR;                 // the final char should be the Null char
     
     /* work backwards to convert each digit in the integer
@@ -190,9 +190,8 @@ void print_time(Clock clock)
     if(clock.hour < TWO_DIGIT_NUM)
     {
         outchar1(ZERO);
-        print_int(clock.hour);
     } /* if */
-    else print_int(clock.hour);
+    print_int(clock.hour);
     
     alt_print(COLON);
     
@@ -201,9 +200,8 @@ void print_time(Clock clock)
     if(clock.minute < TWO_DIGIT_NUM)
     {
         outchar1(ZERO);
-        print_int(clock.minute);
     } /* if */
-    else print_int(clock.minute);
+    print_int(clock.minute);
     
     alt_print(COLON);
     
@@ -212,9 +210,8 @@ void print_time(Clock clock)
     if(clock.second < TWO_DIGIT_NUM)
     {
         outchar1(ZERO);
-        print_int(clock.second);
     } /* if */
-    else print_int(clock.second);
+    print_int(clock.second);
    
 } /* print_time */
 
