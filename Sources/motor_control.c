@@ -57,6 +57,12 @@ void set_motor_speed(char motor_num, char speed_plus_minus_100)
 {
   char speed_1ms_to_2ms;
   
+   // Refuse to move if battery level is below 5%
+  if (g_low_battery_5_percent)
+  {
+    speed_plus_minus_100 = 0;
+  }
+  
   // Changes scale from 1ms to 2ms if 255 = 10ms
   // 25.5 is 1/10 of 255, so 1ms.
   // The formula is a standard range conversion formula from (-100 to 100),
@@ -64,11 +70,6 @@ void set_motor_speed(char motor_num, char speed_plus_minus_100)
   // give a final range of (1ms to 2ms).
   speed_1ms_to_2ms = 25.5+(((speed_plus_minus_100 + 100.0)/200.0)*25.5);
   
-  // Refuse to move if battery level is below 5%
-  if (g_low_battery_5_percent)
-  {
-    speed_1ms_to_2ms = 0;
-  }
   
   if (motor_num == 1)
   {
