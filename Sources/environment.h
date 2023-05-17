@@ -1,7 +1,8 @@
-#include <hidef.h>
-#include <mc9s12dg256.h>
-#pragma LINK_INFO DERIVATIVE "mc9s12dg256b"
-
+/*
+ *  AUTHORS
+ *      Rowan Daly and Anthony Lansing
+ */
+ 
 #include "main_asm.h"
 #include "dragon.h"
 
@@ -12,6 +13,7 @@
 #define LIGHT_CHANNEL 4                     // light sensor is on channel 4
 #define TEMP_CHANNEL 5                      // The channel that temp sensor connects to
 
+/* MACRO FOR CALCULATING FAHRENHEIT FROM CELSIUS */
 #define TEMP_CONV_FORMULA(value_from_adc) (value_from_adc * (float)9/5) + 32;
 
 /* PROTOTYPES */

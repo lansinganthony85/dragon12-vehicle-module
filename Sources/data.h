@@ -1,6 +1,9 @@
-#include <hidef.h>
+/*
+ *  AUTHORS
+ *      Rowan Daly and Anthony Lansing
+ */
+ 
 #include <mc9s12dg256.h>
-#pragma LINK_INFO DERIVATIVE "mc9s12dg256b"
 
 #include "main_asm.h"
 #include "dragon.h"
@@ -9,9 +12,6 @@
 
 #ifndef H_data
 #define H_data
-
-/* GLOBALS */
-#define DATA_BITMASK 0x80
 
 /* the following struct is used to store the data that is collected by the vehicle.
     The struct serves as the structure of the eeprom so that we can read and write

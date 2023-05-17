@@ -3,6 +3,9 @@
  *  NAME
  *      eeprom.c
  *
+ *  AUTHORS
+ *      Rowan Daly and Anthony Lansing
+ *
  *  DESCRIPTION
  *      This collection of functions deal with the reading and writing
  *      of data related to the RC Exploration Vehicle. The EEPROM is connected to the

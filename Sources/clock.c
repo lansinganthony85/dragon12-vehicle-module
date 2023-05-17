@@ -1,6 +1,9 @@
 /*
  *  clock.c
  *
+ *  AUTHORS
+ *      Rowan Daly and Anthony Lansing
+ *
  *  DESCRIPTION
  *      This module provides the functionality necessary to keep track of the time
  *      that the RC Exploration Vehicle is running. We use a struct to keep track

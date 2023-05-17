@@ -76,6 +76,9 @@ g_collected_data get_data(void)
  *  NAME
  *      make_data_log
  *
+ *  AUTHORS
+ *      Rowan Daly and Anthony Lansing
+ *
  *  DESCRIPTION
  *      This function groups values into a struct and returns to be handled by the
  *      calling function.

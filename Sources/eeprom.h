@@ -1,25 +1,26 @@
-
-#include <hidef.h>
+/*
+ *  AUTHORS
+ *      Rowan Daly and Anthony Lansing
+ */
+ 
 #include <mc9s12dg256.h>
-#pragma LINK_INFO DERIVATIVE "mc9s12dg256b"
 
 #include "main_asm.h"
 #include "dragon.h"
-
 
 #ifndef H_eeprom
 #define H_eeprom
 
 /* EEPROM opcodes */
 #define WREN    0x06                // set write enable latch
-#define WRDI    0x04                // reset write enabl latch
+#define WRDI    0x04                // reset write enable latch
 #define READ    0x03                // read the memory code
 #define WRITE   0x02                // write to memory code
 
 /* SPI definitions */
 /* We redefine here in case we wish
 to change ports later one */
-#define SPIBR   SPI2BR
+#define SPIBR   SPI2BR              
 #define SPICR1  SPI2CR1
 #define SPICR2  SPI2CR2
 #define SS_LO   SS2_LO
@@ -28,7 +29,7 @@ to change ports later one */
 #define SPISR   SPI2SR
 #define SS_BITMASK  0x40            // The SS2 port
 #define SPI_CLOCKSPEED 0x10         // to set clockspeed to 12MHz
-#define SPI_MASTER 0x50             // to set Dragon12 to masterwith CPHA and CPOL at 0
+#define SPI_MASTER 0x50             // to set Dragon12 to master with CPHA and CPOL at 0
 
 /* GLOBALS */
 #define JUNK 0xFF                   // a junk value to send to the EEPROM when we want to read data
@@ -36,13 +37,13 @@ to change ports later one */
 
 /* prototypes */
 void eeprom_init(void);
-void write_char(unsigned char);
-void write_int(unsigned int);
+void write_char(uint8);
+void write_int(uint16);
 uint8 read_char(void);
 uint16 read_int(void);
 void write_enable(void);
-uint8 send_byte(unsigned char);
-void set_mem_addr(unsigned int);
+uint8 send_byte(uint8);
+void set_mem_addr(uint16);
 void write_disable(void);
 void complete_write(void);
 uint16 read_data_size(void);

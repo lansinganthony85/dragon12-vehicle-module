@@ -1,6 +1,9 @@
 /*
  *  interface.c
  *
+ *  AUTHORS
+ *      Rowan Daly and Anthony Lansing
+ *
  *  DESCRIPTION
  *      This module contains the functions for traversing a menu and getting
  *      user data for operating the vehicle.

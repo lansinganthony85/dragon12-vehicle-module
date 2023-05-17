@@ -1,5 +1,8 @@
 /*
- * environment.c
+ *  environment.c
+ *
+ *  AUTHORS
+ *      Rowan Daly and Anthony Lansing
  *
  *  DESCRIPTION
  *      This module provides the methods necessary to collect environmental data.

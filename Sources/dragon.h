@@ -1,4 +1,9 @@
-//  Dragon.h
+/*  
+ *  Dragon.h
+ *
+ *  AUTHORS
+ *      Rowan Daly and Anthony Lansing
+ */
 
 #ifndef _DRAGON_H_
 #define _DRAGON_H_

@@ -1,3 +1,7 @@
+/*
+ *  AUTHORS
+ *      Rowan Daly and Anthony Lansing
+ */
 #define BATTERY_ADC_CHANNEL          3 // Port A bit 11
 #define ADC_MAX_VAL                  0x3FF
 #define ADC_4_P_822V                 0x3DA

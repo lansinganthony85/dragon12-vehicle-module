@@ -10,27 +10,33 @@
 
 /* access the common constants */
 #include "dragon.h"
-#include "eeprom.h"
-#include "data.h"
-#include "environment.h"
-#include "output.h"
-#include "clock.h"
-//#include "csc202_lab_support.h"     /* include CSC202 Support */
-#include "rc_read.h"                /* include code to read RC PWM */
+
+/* Files that contain all code and definitions to run vehicle */
+#include "eeprom.h"                     // Functions for reading/writing to FRAM
+#include "data.h"                       // Functions for bundling data
+#include "environment.h"                // Functions for collecting data
+#include "output.h"                     // Functions for outputting data to PuTTY
+#include "clock.h"                      // Functions for keeping time
+#include "rc_read.h"                    // include code to read RC PWM
 #include "motor_control.h"
 #include "battery_monitor.h"
-#include "sound.h"
-#include "interface.h"                  // include functions and definitions for menu interface
+#include "sound.h"                      // Functions for making sounds and music
+#include "interface.h"                  // Functions and definitions for menu interface
 
 /* DEFINITIONS*/
-#define MOTOR_SPEED_MULTIPLIER             100.0
+#define MOTOR_SPEED_MULTIPLIER  100.0
+#define JUNK_VALUE              99      // This value is arbitrary. 99 is chosen as it is not a likely value
+#define MENU_DELAY              2000
+#define MINI_DELAY              50
+#define BAUDRATE                9600
 
 
 /* PROTOTYPES */
 float abs_value(float input_val);
+void interrupt 25 detect_switches(void);
 
 /* GLOBALS */
-uint8 g_done = FALSE;
+uint8 g_done = FALSE;                   // For ending the program
 int motor_left_speed = 0;
 int motor_right_speed = 0;
 
@@ -52,17 +58,15 @@ void interrupt 10 handler2()
 
 void main(void) {
   /* VARIABLES */
-  Clock time_of_data;
-  uint8 old_time_of_data = 99;
-  g_collected_data data_log;
-  uint16 light;
+  Clock time_of_data;                   // To keep track of current time
+  uint8 old_time_of_data = JUNK_VALUE;  // To prevent repetitive data collection
+  g_collected_data data_log;            // To bundle data
+  uint16 light;                         // The light level
   uint16 temperature;
-  uint16 data_size;
-  uint8 index;
-  uint8 true_false = FALSE;
-  uint8 is_explore_mode;
-  uint8 data_freq;
-  uint8 front_collision_logged = FALSE;
+  uint8 time_to_collect = FALSE;        // To check when to collect environmental data
+  uint8 is_explore_mode;                // To check user choice
+  uint8 data_freq;                      // How often to collect data
+  uint8 front_collision_logged = FALSE; // So not to repetively log collisions
   uint8 rear_collision_logged = FALSE;
   
   char LR_decimal = 0.0;
@@ -74,7 +78,8 @@ void main(void) {
   int ADC_battery_reading = 0;
   char battery_level = 100;
   
-  PLL_init();        // set system clock frequency to 24 MHz
+  /* Initialize Dragon12 */
+  PLL_init();                           // set system clock frequency to 24 MHz
   lcd_init();
   clear_lcd();
   seg7_disable();
@@ -88,64 +93,66 @@ void main(void) {
   motor1_init();
   motor2_init();
   
-  noise_init();                             // set up ch5 and ch7 for pulse train through speaker 
-  eeprom_init();                            // prepare FRAM for SPI
-  
-  _asm cli                                  // enable interrupts
+  noise_init();                         // set up ch5 and ch7 for pulse train through speaker 
+  eeprom_init();                        // prepare FRAM for SPI
   
   /* set up Port H interrupts */
-  PIFH = SETALL;                            // clear port h flags
+  PIFH = SETALL;                        // clear port h flags
   PPSH = CLEAR;
   PIEH |= SW5_BITMASK;
+  _asm cli                              // enable interrupts
   
+  /* Display Welcome and starter music */
   type_lcd(WELCOME_LABEL);
   start_jingle();
-  ms_delay(2000);
+  ms_delay(MENU_DELAY);                 // Slight delay for aesthetics
   
+  // ---- CODE FOR SETUP MENU OPTIONS ----
   clear_lcd();
   set_lcd_addr(LINE_1);
   type_lcd(EXPLORE_LABEL);
-  data8(SELECTOR);
+  data8(SELECTOR);                      // Cursor for selections
   set_lcd_addr(LINE_2);
   type_lcd(DATA_LABEL);
   
-  DDRA = 0x00;
-  
-  // ---- CODE FOR SETUP MENU OPTIONS ----
-  is_explore_mode = get_mode();
-  ms_delay(50);
+  is_explore_mode = get_mode();         // Get choice
+  ms_delay(MINI_DELAY);                 // Slight delay for aesthetics
   clear_lcd();
   
   if(is_explore_mode)
   {        
         // ---- CODE FOR DATA FREQUENCY MENU ----
-        data_freq = get_frequency();
-        ms_delay(50);
+        data_freq = get_frequency();    // Get choice
+        ms_delay(MINI_DELAY);           // Slight delay for aesthetics
         clear_lcd();
         
+        // ---- Initialize Explore Mode ----
         explore_jingle();
         set_lcd_addr(LINE_1);
         type_lcd(EXPLORING_LABEL);
         
-        clock_init();
-        ad0_enable();        
+        clock_init();                   // Clock begins running here
+        ad0_enable();                   // Initialize for collecting environmental data        
 
         // ---- CODE FOR WHEN ROBOT IS RUNNING ----        
         while(!g_done)
         {
-            // Only run when true_false is set true by RTI handler
-            true_false = is_collect_time(data_freq);
-            if(true_false)
+            // Only run when time_to_collect is set to TRUE
+            time_to_collect = is_collect_time(data_freq);
+            if(time_to_collect)
             {
                 time_of_data = get_time();
+                
+                /* Prevent data from being collected multiple times in the same
+                    time slot */
                 if(!(time_of_data.second == old_time_of_data))
                 {
                     light = get_light_level();
                     temperature = get_temp();
                     data_log = make_data_log(time_of_data, temperature, light, FALSE, FALSE);
                     write_data(data_log);
-                    old_time_of_data = time_of_data.second;    
-                }
+                    old_time_of_data = time_of_data.second;         // update old_time_data to prevent reuse    
+                } /* if */
                   
             } /* if */
             
@@ -170,22 +177,21 @@ void main(void) {
                 // Set motor values to zero if they're positive
                 motor_left_speed = (motor_left_speed > 0) ? 0 : motor_left_speed;
                 motor_right_speed = (motor_right_speed > 0) ? 0 : motor_right_speed;
-                leds_on(TRUE);
+                sound_effect();
                 
+                /* Only log a collision once */
                 if(!front_collision_logged)
                 {
                     time_of_data = get_time();
                     data_log = make_data_log(time_of_data, 0, 0, TRUE, FALSE);
                     write_data(data_log);
-                    front_collision_logged = TRUE;
-                    sound_effect();
-                }
-            }
+                    front_collision_logged = TRUE;              // This is set true so it can't be logged again
+                } /* if */
+            } /* if */
             else
             {
-                leds_off();
-                front_collision_logged = FALSE;   
-            }
+                front_collision_logged = FALSE;                 // Collision is over so can start logging again   
+            } /* else */
             
             // If ultrasonic detects object behind robot, stop
             // backwards movement and log timestamp
@@ -193,23 +199,21 @@ void main(void) {
             {
                 motor_left_speed = (motor_left_speed < 0) ? 0 : motor_left_speed;
                 motor_right_speed = (motor_right_speed < 0) ? 0 : motor_right_speed;
-                leds_on(TRUE);
+                sound_effect();
                 
+                /* Only log a collision once */
                 if(!rear_collision_logged)
                 {
                     time_of_data = get_time();
                     data_log = make_data_log(time_of_data, 0, 0, FALSE, TRUE);
                     write_data(data_log);
-                    rear_collision_logged = TRUE;
-                    sound_effect();
-                    
-                }
-            }
+                    rear_collision_logged = TRUE;               // This is set true so it can't be logged again 
+                } /* if */
+            } /* if */
             else
             {
-                leds_off();
-                rear_collision_logged = FALSE;   
-            }
+                rear_collision_logged = FALSE;                  // Collision is over so can start logging again   
+            } /* else */
             
             // Check battery level when not in motion
             if ((motor_left_speed == 0) && (motor_right_speed == 0))
@@ -240,23 +244,30 @@ void main(void) {
             
         } /* while */
         
-        complete_write();      
+        complete_write();                       // Can finish writing data      
                
         
   } /* if */
   else
-  {        
+  { 
+        uint8 index;                            // For incrementing
+        uint16 data_size;                       // To get data size for outputting to PuTTY
+
+        /* Display Wait Screen for when ready to print */
         set_lcd_addr(LINE_1);
         type_lcd(DATA_READY);
         set_lcd_addr(LINE_2);
         type_lcd(PRESS_ENTER);
         wait_for_enter_press();
         sound_effect();
+        
+        /* Display that printing is being executed */
         clear_lcd();
         set_lcd_addr(LINE_1);
         type_lcd(PRINTING_LABEL);
         
-        SCI1_init(9600);
+        /* Initialize SCI1 and print out data */
+        SCI1_init(BAUDRATE);
         data_size = read_data_size();
         write_labels();        
         
@@ -266,19 +277,22 @@ void main(void) {
             write_to_putty(data_log);
         } /* for */
         
+        /* printing done so let user know */
         clear_lcd();
         set_lcd_addr(LINE_1);
         type_lcd(DONE_LABEL);
+        set_lcd_addr(LINE_2);
+        type_lcd(PRESS_SW5);
         while(!g_done);
         
   } /* else */
   
+  /* End Program */
   clear_lcd();
   set_lcd_addr(LINE_1);
   type_lcd(GOODBYE_MESS);
   end_jingle();
 
- 
 } /* main */
 
 
@@ -300,7 +314,7 @@ float abs_value(float input_val)
   {
     return input_val;
   }
-}
+} /* abs_value */
 
 
 /*

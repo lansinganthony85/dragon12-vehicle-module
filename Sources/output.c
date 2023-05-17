@@ -1,13 +1,14 @@
 /*
  *  output.c
  *
+ *  AUTHORS
+ *      Rowan Daly and Anthony Lansing
+ *
  *  DESCRIPTION
  *      This module contains functions necessary for outputting data to PuTTY.
  */
 
 #include "output.h"
-
-
 
 /*
  *  NAME
@@ -81,7 +82,7 @@ void write_to_putty(g_collected_data data_log)
         outchar1(TAB);
         print_int(data_log.temperature);
         outchar1(DEGREE_SYMBOL);
-        outchar1('F');
+        outchar1(FAHRENHEIT);
     } /* else */
     
     /* got to next line */
@@ -140,10 +141,10 @@ void print_int (uint16 int_to_print)
  */
 uint8 get_num_length(uint16 num)
 {
-    if (num >= FOUR_DIGIT_NUM) return 4;
-    if (num >= THREE_DIGIT_NUM) return 3;
-    if (num >= TWO_DIGIT_NUM) return 2;
-    return 1;
+    if (num >= FOUR_DIGIT_NUM) return LENGTH_FOUR;
+    if (num >= THREE_DIGIT_NUM) return LENGTH_THREE;
+    if (num >= TWO_DIGIT_NUM) return LENGTH_TWO;
+    return LENGTH_ONE;
 } /* get_num_length */
 
 /*

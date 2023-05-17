@@ -1245,8 +1245,8 @@ noise_init:
             ldd   TCNT        ;set init value of TC5 and TC7
             std   TC5 
             std   TC7		  ;init cnt in TC5 & TC7
-            bclr  OC7M,#$20   ;pulse train out PT5
-            bclr  OC7D,#$20   ;PT5 goes high on TC7 match
+            bclr  OC7M,#$20   ;no pulse train out PT5
+            bclr  OC7D,#$20   
             bclr  TCTL1,#$08  ;disconnect timer from output pins
             bclr  TCTL1,#$04
             rts
@@ -1271,8 +1271,8 @@ start_sound:
 ; continue to pulse as the timer is being used elsewhere
 stop_sound:
             sei
-            bclr  OC7M,#$20   ;pulse train out PT5
-            bclr  OC7D,#$20   ;PT5 goes high on TC7 match
+            bclr  OC7M,#$20   ;no pulse train out PT5
+            bclr  OC7D,#$20   
             bclr  TCTL1,#$08  ;disconnect timer from output pins
             bclr  TIE,#$20    ;disable TC5 interrupts
             cli               ; re-enable all other interrupts

@@ -54,7 +54,7 @@ void interrupt 13 noise_maker()
 void start_jingle(void)
 {
      
-    uint8 incrementer;                      // to increment through arrays
+    uint8 incrementor;                      // to increment through arrays
     
     /* the notes of the song */
     uint16 notes[] = 
@@ -63,7 +63,7 @@ void start_jingle(void)
     };
     
     /* the length of each note */
-    uint8 note_lengths[] = 
+    uint16 note_lengths[] = 
     {
         EIGTH_NOTE, EIGTH_NOTE, QUARTER_NOTE
     };
@@ -73,11 +73,11 @@ void start_jingle(void)
     start_sound();
     
     /* play each note for the predetermined length of time */
-    for(incrementer = 0; incrementer < START_JINGLE_SIZE; incrementer++)
+    for(incrementor = 0; incrementor < START_JINGLE_SIZE; incrementor++)
     {
-        g_pitch = notes[incrementer];       // note to be played when sound is turned on
+        g_pitch = notes[incrementor];       // note to be played when sound is turned on
        
-        ms_delay(note_lengths[incrementer]);// wait for not to play its intended length   
+        ms_delay(note_lengths[incrementor]);// wait for not to play its intended length   
     } /* for */
     
     stop_sound();                            // turn sound off and re-enable interrupts
@@ -110,6 +110,9 @@ void sound_effect(void)
  *  NAME
  *      explore_jingle
  *
+ *  AUTHORS
+ *      Rowan Daly and Anthony Lansing
+ *
  *  DESCRIPTION
  *      This function plays a series of notes for when the vehicle starts exploring.
  *
@@ -123,7 +126,7 @@ void explore_jingle(void)
 {
     //asm(bclr TIE, #$FF);                    // Disables interrupts
     
-    uint8 incrementer;                      // to increment through arrays
+    uint8 incrementor;                      // to increment through arrays
     
     /* the notes of the jingle */
     uint16 notes[] = 
@@ -132,9 +135,9 @@ void explore_jingle(void)
     };
     
     /* the length each note should be played */
-    uint8 note_lengths[] = 
+    uint16 note_lengths[] = 
     {
-        DOTTED_QUARTER_NOTE, QUARTER_NOTE, QUARTER_NOTE, QUARTER_NOTE, QUARTER_NOTE, HALF_NOTE
+        QUARTER_NOTE, EIGTH_NOTE, EIGTH_NOTE, EIGTH_NOTE, EIGTH_NOTE, QUARTER_NOTE
     };
     
     TIE = CLEAR;                            // Clear any existing interrupts
@@ -142,11 +145,11 @@ void explore_jingle(void)
     start_sound();
     
     /* play each note for the predetermined length of time */
-    for(incrementer = 0; incrementer < EXPLORE_JINGLE_SIZE; incrementer++)
+    for(incrementor = 0; incrementor < EXPLORE_JINGLE_SIZE; incrementor++)
     {
-        g_pitch = notes[incrementer];       // note to be played when sound is turned on
+        g_pitch = notes[incrementor];       // note to be played when sound is turned on
        
-        ms_delay(note_lengths[incrementer]);// wait for not to play its intended length   
+        ms_delay(note_lengths[incrementor]);// wait for not to play its intended length   
     } /* for */
     
     stop_sound();                            // turn off sound and re-enable interrupts
@@ -177,7 +180,7 @@ void end_jingle(void)
     };
     
     /* the duration each note should play */
-    uint8 note_lengths[] = 
+    uint16 note_lengths[] = 
     {
         EIGTH_NOTE, EIGTH_NOTE, QUARTER_NOTE
     };

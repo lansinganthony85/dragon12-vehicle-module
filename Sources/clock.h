@@ -1,6 +1,7 @@
-#include <hidef.h>
-#include <mc9s12dg256.h>
-#pragma LINK_INFO DERIVATIVE "mc9s12dg256b"
+/*
+ *  AUTHORS
+ *      Rowan Daly and Anthony Lansing
+ */
 
 #include "main_asm.h"
 #include "dragon.h"
@@ -9,8 +10,8 @@
 #define H_clock
 
 /* GLOBALS */
-#define TIME_COUNT_LIMIT    60          // when seconds and minutes to roll over to zero
-#define ONE_SECOND          100         // the number of RTIs before 1 second has passed
+#define TIME_COUNT_LIMIT    60          // when seconds and minutes should roll over to zero
+#define ONE_SECOND          100         // the number of RTIs before apprx. 1 second has passed
 
 /* use a struct to handle clock-related data as an object */
 typedef struct 

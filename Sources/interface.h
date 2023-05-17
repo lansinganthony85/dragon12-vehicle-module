@@ -1,12 +1,10 @@
-/* common defines and macros */ 
-#include <hidef.h>
+/*
+ *  AUTHORS
+ *      Rowan Daly and Anthony Lansing
+ */
 
 /* derivative information */
 #include <mc9s12dg256.h>
-#pragma LINK_INFO DERIVATIVE "mc9s12dg256b"
-
-/* interface to the assembly module */
-#include "main_asm.h"
 
 /* access the common constants */
 #include "dragon.h"
@@ -32,14 +30,15 @@
 #define DATA_READY      "DATA READY"
 #define PRINTING_LABEL  "PRINTING DATA..."
 #define DONE_LABEL      "DONE."
+#define PRESS_SW5       "PRESS SW5 TO END"
 #define GOODBYE_MESS    "GOOD BYE"
 
 /* TEXT LCD ADDRESSES */
 #define EXPLORE_SELECT_ADDR 0x07
-#define DATA_SELECT_ADDR 0x48
+#define DATA_SELECT_ADDR    0x48
 
 /* PORT M BITMASKS FOR BUTTONS */
-#define ENTER_BITMASK 0x04                  // Connected to PM2
+#define ENTER_BITMASK   0x04                // Connected to PM2
 #define BUTTON1_BITMASK 0x01                // Connected to PM0
 #define BUTTON2_BITMASK 0x02                // Connected to PM1
 

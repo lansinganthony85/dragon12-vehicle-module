@@ -1,3 +1,7 @@
+//
+//  AUTHORS
+//      Rowan Daly and Anthony Lansing
+// 
 // Code to combine values from LR and FB controls. Values are
 // added together, and if either is over 100 or under -100, both
 // values are scaled to not exceed those limits.
