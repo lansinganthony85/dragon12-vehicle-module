@@ -73,9 +73,9 @@ void main(void) {
   char FB_decimal = 0.0;
 
   //float motor_scalar = 1;
-  char dip_switch_read = 0;
-  char degrees_f_reading = 0;
-  int ADC_battery_reading = 0;
+  //char dip_switch_read = 0;
+  //char degrees_f_reading = 0;
+  //int ADC_battery_reading = 0;
   char battery_level = 100;
   
   /* Initialize Dragon12 */
