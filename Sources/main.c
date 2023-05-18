@@ -69,14 +69,10 @@ void main(void) {
   uint8 front_collision_logged = FALSE; // So not to repetively log collisions
   uint8 rear_collision_logged = FALSE;
   
-  char LR_decimal = 0.0;
-  char FB_decimal = 0.0;
-
-  //float motor_scalar = 1;
-  //char dip_switch_read = 0;
-  //char degrees_f_reading = 0;
-  //int ADC_battery_reading = 0;
-  char battery_level = 100;
+  char LR_decimal = 0.0;                // Reading from remote control
+  char FB_decimal = 0.0;      
+  int ADC_battery_reading = 0;          // Raw ADC battery reading
+  char battery_level = 100;             // Battery level out of 100
   
   /* Initialize Dragon12 */
   PLL_init();                           // set system clock frequency to 24 MHz

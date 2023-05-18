@@ -9,9 +9,7 @@
 #include "main_asm.h" /* interface to the assembly module */
 
 
-
 #define INTERRUPT_DISABLE_DELAY_MS         5     // At least 2x control pulse width  
-
 #define PWM_HIGH_TO_PLUS_MINUS_100(input)  100*2.0*(input-2250.0)/1500.0 // -100 to 100
 
 
@@ -35,24 +33,19 @@ char get_high_time_decimal(char channel_number)
   signed char high_time = 0;
   
   if (channel_number == 1)
-  {
-    //TIE |= 0x02;                    
+  {                   
     TIE = 0x02;                     // Enables interrupts on ONLY PTT1
     ms_delay(INTERRUPT_DISABLE_DELAY_MS);
     high_time = PWM_HIGH_TO_PLUS_MINUS_100(get_HI_time1());
-    TIE &= ~0x02;                   // Disables interrupts on PTT1
-    //asm(bclr TIE, #$02);          
-    
+    TIE &= ~0x02;                   // Disables interrupts on PTT1    
   }
   
   else if (channel_number == 2)
   {
-    //TIE |= 0x04;                    
     TIE = 0x04;                     // Enables interrupts on ONLY PTT2
     ms_delay(INTERRUPT_DISABLE_DELAY_MS);
     high_time = PWM_HIGH_TO_PLUS_MINUS_100(get_HI_time2());
-    TIE &= ~0x04;                   // Disables interrupts on PTT2
-    //asm(bclr TIE, #$04);           
+    TIE &= ~0x04;                   // Disables interrupts on PTT2         
   }
   
      
